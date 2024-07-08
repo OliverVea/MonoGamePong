@@ -3,10 +3,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Pong.Models;
+using Pong.Services;
 
-namespace MonogameTest;
+namespace Pong;
 
-public class Game1 : Game
+public class Application : Game
 {
     private readonly RequireInitialization<GraphicsDeviceManager> _graphics = new();
     private readonly RequireInitialization<SpriteBatch> _spriteBatch = new();
@@ -15,7 +17,7 @@ public class Game1 : Game
     private readonly RequireInitialization<IServiceProvider> _serviceProvider = new();
     private IServiceProvider ServiceProvider => _serviceProvider.Value;
 
-    public Game1()
+    public Application()
     {
         _graphics.Value = new GraphicsDeviceManager(this);
         Content.RootDirectory = "Content";

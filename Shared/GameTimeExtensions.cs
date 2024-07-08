@@ -1,6 +1,6 @@
 using Microsoft.Xna.Framework;
 
-namespace MonogameTest;
+namespace Shared;
 
 public static class GameTimeExtensions
 {

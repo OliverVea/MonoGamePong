@@ -1,6 +1,4 @@
-using System;
-
-namespace MonogameTest;
+namespace Shared;
 
 public class RequireInitialization<T>(bool initializeOnce = true)
 {

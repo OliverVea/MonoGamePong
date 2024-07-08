@@ -1,30 +1,28 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Pong.Models;
 
-namespace MonogameTest;
+namespace Pong.Services;
 
 public class GameDrawerService(GameState gameState, GameProperties gameProperties, GraphicsDevice graphicsDevice)
 {
-    private Texture2D? _paddleTexture;
-    private Texture2D? _ballTexture;
+    private readonly RequireInitialization<Texture2D> _paddleTexture = new();
+    private readonly RequireInitialization<Texture2D> _ballTexture = new();
     
-    private Texture2D PaddleTexture => _paddleTexture ?? throw new System.Exception("Paddle texture not initialized");
-    private Texture2D BallTexture => _ballTexture ?? throw new System.Exception("Ball texture not initialized");
     
     public void Initialize()
     {
-        var screenSpacePaddleWidth = ToScreenSpace(gameProperties.PaddleWidth, 0, gameProperties.ScreenWidth);
+        var screenSpacePaddleWidth = (int)ToScreenSpace(gameProperties.PaddleWidth, 0, gameProperties.ScreenWidth);
+        var screenSpacePaddleHeight = (int)ToScreenSpace(gameProperties.PaddleHeight, 0, gameProperties.ScreenHeight);
         
+        _paddleTexture.Value = new Texture2D(graphicsDevice, screenSpacePaddleWidth, screenSpacePaddleHeight);
+        _ballTexture.Value = new Texture2D(graphicsDevice, screenSpacePaddleWidth, screenSpacePaddleWidth);
         
+        var paddleData = CreateTextureData(screenSpacePaddleWidth, screenSpacePaddleHeight, Color.White);
+        var ballData = CreateTextureData(screenSpacePaddleWidth, screenSpacePaddleWidth, Color.White);
         
-        _paddleTexture = new Texture2D(graphicsDevice, 20, 200);
-        _ballTexture = new Texture2D(graphicsDevice, 20, 20);
-        
-        var paddleData = CreateTextureData(20, 200, Color.White);
-        var ballData = CreateTextureData(20, 20, Color.White);
-        
-        PaddleTexture.SetData(paddleData);
-        BallTexture.SetData(ballData);
+        _paddleTexture.Value.SetData(paddleData);
+        _ballTexture.Value.SetData(ballData);
     }
     
     public void Draw(SpriteBatch spriteBatch)
@@ -35,8 +33,8 @@ public class GameDrawerService(GameState gameState, GameProperties gamePropertie
 
     private void DrawPaddles(SpriteBatch spriteBatch)
     {
-        DrawPaddle(spriteBatch, 0.05f, gameState.LeftPaddleY);
-        DrawPaddle(spriteBatch, 0.95f, gameState.RightPaddleY);
+        DrawPaddle(spriteBatch, gameProperties.PaddleIndent, gameState.LeftPaddleY);
+        DrawPaddle(spriteBatch, 1 - gameProperties.PaddleIndent, gameState.RightPaddleY);
     }
 
     private void DrawPaddle(SpriteBatch spriteBatch, float paddleX, float paddleY)
@@ -46,7 +44,7 @@ public class GameDrawerService(GameState gameState, GameProperties gamePropertie
         
         var position = new Vector2(screenSpaceX, screenSpaceY);
         
-        spriteBatch.Draw(PaddleTexture, position, Color.Green);
+        spriteBatch.Draw(_paddleTexture.Value, position, Color.White);
     }
 
     private void DrawBall(SpriteBatch spriteBatch)
@@ -56,12 +54,8 @@ public class GameDrawerService(GameState gameState, GameProperties gamePropertie
         
         var position = new Vector2(screenSpaceX, screenSpaceY);
         
-        spriteBatch.Draw(BallTexture, position, Color.White);
+        spriteBatch.Draw(_ballTexture.Value, position, Color.White);
     }
-    
-    
-    
-    // Utility
     
     private static float ToScreenSpace(float gameSpaceValue, float gameSpaceSize, int screenSize)
     {

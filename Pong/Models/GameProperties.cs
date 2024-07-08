@@ -1,15 +1,4 @@
-using SharpDX;
-
-namespace MonogameTest;
-
-public class GameState
-{
-    public float LeftPaddleY { get; set; } = 0.5f;
-    public float RightPaddleY { get; set; } = 0.5f;
-    
-    public Vector2 BallPosition { get; set; } = new(0.5f, 0.5f);
-    public Vector2 BallVelocity { get; set; } = new(1, 1);
-}
+﻿namespace Pong.Models;
 
 public class GameProperties
 {
@@ -19,6 +8,7 @@ public class GameProperties
     public float PaddleSpeed { get; set; } = 1.5f;
     public float BallSpeed { get; set; } = 0.5f;
     public float PaddleWidth { get; set; } = 0.02f;
-    public float PaddleHeight { get; set; } = 0.1f;
+    public float PaddleHeight { get; set; } = 0.2f;
     public float BallSize { get; set; } = 0.02f;
+    public float PaddleIndent { get; set; } = 0.075f;
 }
