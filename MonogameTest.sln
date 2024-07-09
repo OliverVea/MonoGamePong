@@ -5,9 +5,17 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{E1982F73-EEB4-40FD-AAD4-14150E50DB2E}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
+		.config\dotnet-tools.json = .config\dotnet-tools.json
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{85157457-5969-41CD-8ED6-CD9CD7D49787}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShaderSandbox", "ShaderSandbox\ShaderSandbox.csproj", "{9B91272A-185F-4A71-8382-B3B9F80F85EF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "notes", "notes", "{FB04A9B8-ADFC-402B-9246-4B26CD1A540C}"
+	ProjectSection(SolutionItems) = preProject
+		Notes\game_loop.md = Notes\game_loop.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,5 +31,9 @@ Global
 		{85157457-5969-41CD-8ED6-CD9CD7D49787}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{85157457-5969-41CD-8ED6-CD9CD7D49787}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{85157457-5969-41CD-8ED6-CD9CD7D49787}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B91272A-185F-4A71-8382-B3B9F80F85EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B91272A-185F-4A71-8382-B3B9F80F85EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B91272A-185F-4A71-8382-B3B9F80F85EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B91272A-185F-4A71-8382-B3B9F80F85EF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
