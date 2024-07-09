@@ -6,6 +6,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{E1982F73-EEB
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
 		.config\dotnet-tools.json = .config\dotnet-tools.json
+		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{85157457-5969-41CD-8ED6-CD9CD7D49787}"
