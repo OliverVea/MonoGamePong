@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Content;
+﻿using System.Collections.Generic;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Shared.Content;
 using Shared.Sprites;
@@ -11,7 +12,7 @@ public class CharacterAtlasLoader(ContentManager contentManager) : IContentLoade
     private const int SpriteWidth = 50;
     private const int SpriteHeight = 37;
 
-    public (Id<TextureAtlas> ContentId, TextureAtlas Content) Load()
+    public IEnumerable<(Id<TextureAtlas> ContentId, TextureAtlas Content)> Load()
     {
         var texture = contentManager.Load<Texture2D>(TexturePath);
         
@@ -22,6 +23,6 @@ public class CharacterAtlasLoader(ContentManager contentManager) : IContentLoade
             SpriteHeight = SpriteHeight
         };
 
-        return (Ids.CharacterAtlas, textureAtlas);
+        return [(Ids.CharacterAtlas, textureAtlas)];
     }
 }

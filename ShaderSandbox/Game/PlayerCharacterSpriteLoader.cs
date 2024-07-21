@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Content;
+﻿using System.Collections.Generic;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Shared.Content;
 using Shared.Sprites;
@@ -12,7 +13,7 @@ public class PlayerCharacterSpriteLoader(ContentManager contentManager) : IConte
     private const int SpriteWidth = 50;
     private const int SpriteHeight = 37;
     
-    public (Id<CharacterSprite> ContentId, CharacterSprite Content) Load()
+    public IEnumerable<(Id<CharacterSprite> ContentId, CharacterSprite Content)> Load()
     {
         var texture = contentManager.Load<Texture2D>(TexturePath);
         
@@ -34,6 +35,6 @@ public class PlayerCharacterSpriteLoader(ContentManager contentManager) : IConte
             IdleFront = spriteAnimation
         };
 
-        return (Ids.PlayerCharacter, characterSprite);
+        return [(Ids.PlayerCharacter, characterSprite)];
     }
 }

@@ -1,27 +1,31 @@
 using System;
 using Microsoft.Xna.Framework;
-using Pong.Core.Models;
 using Shared.Extensions;
+using Shared.Lifetime;
 
-namespace Pong.Core.Services;
+namespace Pong.Core;
 
-public class GameLogicService(GameState gameState, GameProperties gameProperties)
+public class GameUpdateService(
+    GameInput gameInput,
+    GameTime gameTime,
+    GameState gameState,
+    GameProperties gameProperties) : IUpdateService
 {
-    public void Update(GameInput gameInput)
+    public void Update()
     {
-        UpdatePaddles(gameInput);
-        UpdateBall(gameInput);
+        UpdatePaddles();
+        UpdateBall();
     }
 
-    private void UpdatePaddles(GameInput gameInput)
+    private void UpdatePaddles()
     {
-        gameState.LeftPaddleY = UpdatePaddle(gameState.LeftPaddleY, gameInput.LeftPlayerInput.Direction, gameInput.GameTime);
-        gameState.RightPaddleY = UpdatePaddle(gameState.RightPaddleY, gameInput.RightPlayerInput.Direction, gameInput.GameTime);
+        gameState.LeftPaddleY = UpdatePaddle(gameState.LeftPaddleY, gameInput.LeftPlayerInput.Direction);
+        gameState.RightPaddleY = UpdatePaddle(gameState.RightPaddleY, gameInput.RightPlayerInput.Direction);
     }
 
-    private float UpdatePaddle(float paddleY, InputDirection direction, GameTime gameTime)
+    private float UpdatePaddle(float paddleY, InputDirection direction)
     {
-        var paddleSpeed = GetFrameSpeed(gameTime, gameProperties.PaddleSpeed);
+        var paddleSpeed = GetFrameSpeed(gameProperties.PaddleSpeed);
         var change = direction switch
         {
             InputDirection.Up => -paddleSpeed,
@@ -35,9 +39,9 @@ public class GameLogicService(GameState gameState, GameProperties gameProperties
         return Math.Clamp(paddleY + change, minHeight, maxHeight);
     }
 
-    private void UpdateBall(GameInput gameInput)
+    private void UpdateBall()
     {
-        var nextPosition = CalculateNextPosition(gameInput);
+        var nextPosition = CalculateNextPosition();
         
         var collidesWithLeftPaddle = CollidesWithPaddle(nextPosition, gameProperties.PaddleIndent, gameState.LeftPaddleY);
         var collidesWithRightPaddle = CollidesWithPaddle(nextPosition, 1 - gameProperties.PaddleIndent, gameState.RightPaddleY);
@@ -45,7 +49,7 @@ public class GameLogicService(GameState gameState, GameProperties gameProperties
         if (collidesWithLeftPaddle || collidesWithRightPaddle)
         {
             gameState.BallVelocity = gameState.BallVelocity.FlipHorizontal();
-            nextPosition = CalculateNextPosition(gameInput);
+            nextPosition = CalculateNextPosition();
         }
 
         var collidesWithTop = nextPosition.Y < gameProperties.BallHeight;
@@ -54,15 +58,15 @@ public class GameLogicService(GameState gameState, GameProperties gameProperties
         if (collidesWithTop || collidesWithBottom)
         {
             gameState.BallVelocity = gameState.BallVelocity.FlipVertical();
-            nextPosition = CalculateNextPosition(gameInput);
+            nextPosition = CalculateNextPosition();
         }
 
         gameState.BallPosition = nextPosition;
     }
 
-    private Vector2 CalculateNextPosition(GameInput gameInput)
+    private Vector2 CalculateNextPosition()
     {
-        var speed = GetFrameSpeed(gameInput.GameTime, gameProperties.BallSpeed);
+        var speed = GetFrameSpeed(gameProperties.BallSpeed);
         var delta = gameState.BallVelocity * speed;
         return gameState.BallPosition + delta;
     }
@@ -76,5 +80,5 @@ public class GameLogicService(GameState gameState, GameProperties gameProperties
                dy <= (gameProperties.PaddleHeight + gameProperties.BallHeight) / 2;
     }
     
-    private float GetFrameSpeed(GameTime gametime, float speed) => gametime.DeltaTime() * speed;
+    private float GetFrameSpeed(float speed) => gameTime.DeltaTime() * speed;
 }

@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using ShaderSandbox.Game;
 using Shared.Content;
+using Shared.Extensions;
 using Shared.Lifetime;
 using Shared.Mouse;
 using Shared.Sprites;
@@ -12,24 +13,18 @@ public static class ServiceExtensions
 {
     public static IServiceCollection RegisterServices(this IServiceCollection services)
     {
-        services.AddContentLookup<CharacterSprite>();
-        services.AddContentLookup<TextureAtlas>();
-        services.AddContentLookup<Effect>();
+        services.RegisterContentLookup<CharacterSprite>();
+        services.RegisterContentLookup<TextureAtlas>();
+        services.RegisterContentLookup<Effect>();
 
-        services.AddTransient<IContentLoader<TextureAtlas>, CharacterAtlasLoader>();
-        services.AddTransient<IContentLoader<Effect>, SpriteEffect1Loader>();
-        services.AddTransient<IContentLoader<CharacterSprite>, PlayerCharacterSpriteLoader>();
+        services.RegisterInterfaces<CharacterAtlasLoader>();
+        services.RegisterInterfaces<SpriteEffect1Loader>();
+        services.RegisterInterfaces<PlayerCharacterSpriteLoader>();
 
         services.AddMouseHandling();
 
-        services.AddSingleton<IDrawService, GameDrawerService>();
+        services.RegisterInterfaces<GameDrawerService>();
 
         return services;
-    }
-
-    private static void AddContentLookup<T>(this IServiceCollection services)
-    {
-        services.AddSingleton<ContentLookup<T>>();
-        services.AddTransient<IStartupService>(sp => sp.GetRequiredService<ContentLookup<T>>());
     }
 }

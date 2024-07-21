@@ -1,5 +1,8 @@
-﻿using Pong;
+﻿using Pong.Core;
 
-using var game = new PongGame();
+using var game = new DIGame(services => services.RegisterServices())
+{
+    ContentRootDirectory = string.Empty
+};
 
 game.Run();

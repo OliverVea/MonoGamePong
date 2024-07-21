@@ -1,47 +1,52 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Pong.Core.Models;
-using Pong.Core.Textures;
+using Shared.Content;
+using Shared.Lifetime;
 
-namespace Pong.Core.Services;
+namespace Pong.Core;
 
 public class GameDrawerService(
+    SpriteBatch spriteBatch,
     GameState gameState,
     GameProperties gameProperties,
-    TextureLookup textureLookup)
+    ContentLookup<Texture2D> textureLookup) : IDrawService
 {
-    public void Draw(SpriteBatch spriteBatch)
+    public void Draw()
     {
-        DrawPaddles(spriteBatch);
-        DrawBall(spriteBatch);
+        spriteBatch.Begin();
+        
+        DrawPaddles();
+        DrawBall();
+        
+        spriteBatch.End();
     }
 
-    private void DrawPaddles(SpriteBatch spriteBatch)
+    private void DrawPaddles()
     {
-        DrawPaddle(spriteBatch, gameProperties.PaddleIndent, gameState.LeftPaddleY);
-        DrawPaddle(spriteBatch, 1 - gameProperties.PaddleIndent, gameState.RightPaddleY);
+        DrawPaddle(gameProperties.PaddleIndent, gameState.LeftPaddleY);
+        DrawPaddle(1 - gameProperties.PaddleIndent, gameState.RightPaddleY);
     }
 
-    private void DrawPaddle(SpriteBatch spriteBatch, float paddleX, float paddleY)
+    private void DrawPaddle(float paddleX, float paddleY)
     {
         var screenSpaceX = ToScreenSpace(paddleX, gameProperties.PaddleWidth, gameProperties.ScreenWidth);
         var screenSpaceY = ToScreenSpace(paddleY, gameProperties.PaddleHeight, gameProperties.ScreenHeight);
         
         var position = new Vector2(screenSpaceX, screenSpaceY);
 
-        var paddleTexture = textureLookup.GetTexture(TextureIds.Paddle);
+        var paddleTexture = textureLookup.Get(Ids.Paddle);
         
         spriteBatch.Draw(paddleTexture, position, Color.White);
     }
 
-    private void DrawBall(SpriteBatch spriteBatch)
+    private void DrawBall()
     {
         var screenSpaceX = ToScreenSpace(gameState.BallPosition.X, gameProperties.BallWidth, gameProperties.ScreenWidth);
         var screenSpaceY = ToScreenSpace(gameState.BallPosition.Y, gameProperties.BallHeight, gameProperties.ScreenHeight);
         
         var position = new Vector2(screenSpaceX, screenSpaceY);
 
-        var ballTexture = textureLookup.GetTexture(TextureIds.Ball);
+        var ballTexture = textureLookup.Get(Ids.Ball);
         
         spriteBatch.Draw(ballTexture, position, Color.White);
     }

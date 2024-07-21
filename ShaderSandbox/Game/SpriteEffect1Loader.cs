@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Content;
+﻿using System.Collections.Generic;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Shared.Content;
 
@@ -8,10 +9,10 @@ public class SpriteEffect1Loader(ContentManager contentManager) : IContentLoader
 {
     private const string SpriteEffectPath = "shaders/sprite_effect_1";
 
-    public (Id<Effect> ContentId, Effect Content) Load()
+    public IEnumerable<(Id<Effect> ContentId, Effect Content)> Load()
     {
         var spriteEffect = contentManager.Load<Effect>(SpriteEffectPath);
 
-        return (Ids.SpriteEffect1, spriteEffect);
+        return [(Ids.SpriteEffect1, spriteEffect)];
     }
 }

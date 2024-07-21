@@ -1,12 +1,13 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Pong.Core.Models;
+using Shared.Content;
 
-namespace Pong.Core.Textures;
+namespace Pong.Core;
 
-public class BallTextureLoader(GameProperties gameProperties) : ITextureLoader
+public class BallTextureLoader(GraphicsDevice graphicsDevice, GameProperties gameProperties) : IContentLoader<Texture2D>
 {
-    public (Id<Texture2D> TextureId, Texture2D Texture) LoadTexture(GraphicsDevice graphicsDevice)
+    public IEnumerable<(Id<Texture2D> ContentId, Texture2D Content)> Load()
     {
         var width = (int)(gameProperties.BallWidth * gameProperties.ScreenWidth);
         var height = (int)(gameProperties.BallHeight * gameProperties.ScreenHeight);
@@ -18,6 +19,6 @@ public class BallTextureLoader(GameProperties gameProperties) : ITextureLoader
         
         texture.SetData(color);
 
-        return (TextureIds.Ball, texture);
+        return [(Ids.Ball, texture)];
     }
 }

@@ -1,6 +1,6 @@
 using Microsoft.Xna.Framework;
 
-namespace Pong.Core.Models;
+namespace Pong.Core;
 
 public class GameState
 {

@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Pong.Core.Models;
-using Pong.Core.Services;
-using Pong.Core.Textures;
+using Microsoft.Xna.Framework.Graphics;
+using Shared.Extensions;
 
 namespace Pong.Core;
 
@@ -9,17 +8,18 @@ public static class ServiceExtensions
 {
     public static IServiceCollection RegisterServices(this IServiceCollection services)
     {
+        services.AddSingleton<GameInput>();
         services.AddSingleton<GameState>();
-        services.AddSingleton<TextureLookup>();
+        services.AddSingleton<GameProperties>();
 
-        services.AddTransient<ITextureLoader, BallTextureLoader>();
-        services.AddTransient<ITextureLoader, PaddleTextureLoader>();
+        services.RegisterInterfaces<BallTextureLoader>();
+        services.RegisterInterfaces<PaddleTextureLoader>();
+        
+        services.RegisterContentLookup<Texture2D>();
 
-        services.AddScoped<GameDrawerService>();
-        services.AddScoped<GameLogicService>();
-        services.AddScoped<GameInputService>();
-
-        services.AddTransient<Initializable>(sp => sp.GetRequiredService<TextureLookup>());
+        services.RegisterService<GameDrawerService>();
+        services.RegisterService<GameUpdateService>();
+        services.RegisterService<GameInputService>();
 
         return services;
     }

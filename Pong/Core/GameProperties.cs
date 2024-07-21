@@ -1,4 +1,4 @@
-﻿namespace Pong.Core.Models;
+﻿namespace Pong.Core;
 
 public class GameProperties
 {

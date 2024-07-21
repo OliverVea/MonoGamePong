@@ -4,18 +4,24 @@ using StrictId;
 
 namespace Shared.Content;
 
-public class ContentLookup<T>(IEnumerable<IContentLoader<T>> loaders) : IStartupService
+public class ContentLookup<T>(IEnumerable<IContentLoader<T>> contentLoaders) : IStartupService
 {
     private readonly Dictionary<Id<T>, T> _lookup = new();
     
     public void Startup()
     {
-        foreach (var textureLoader in loaders)
+        foreach (var contentLoader in contentLoaders)
         {
-            var (textureId, texture) = textureLoader.Load();
-
-            if (_lookup.TryAdd(textureId, texture)) continue;
-            throw new ApplicationException("Tried to register texture with same id twice");
+            LoadContent(contentLoader);
+        }
+    }
+    
+    private void LoadContent(IContentLoader<T> contentLoader)
+    {
+        foreach (var (contentId, content) in contentLoader.Load())
+        {
+            if (_lookup.TryAdd(contentId, content)) continue;
+            throw new ApplicationException("Tried to register content with same id twice");
         }
     }
 
