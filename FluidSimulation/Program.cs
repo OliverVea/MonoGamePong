@@ -1,4 +1,4 @@
-﻿using ShaderSandbox;
+﻿using FluidSimulation;
 
 using var game = new DIGame(s => s.RegisterServices())
 {

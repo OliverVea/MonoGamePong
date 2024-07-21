@@ -8,5 +8,6 @@
       <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.1.303" />
       <PackageReference Include="OneOf" Version="3.0.271" />
       <PackageReference Include="StrictId" Version="1.1.0" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
     </ItemGroup>
 </Project>

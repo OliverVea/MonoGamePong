@@ -1,6 +1,7 @@
 using System;
 using Microsoft.Xna.Framework;
 using Pong.Core.Models;
+using Shared.Extensions;
 
 namespace Pong.Core.Services;
 
