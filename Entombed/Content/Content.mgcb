@@ -1,0 +1,14 @@
+
+#----------------------------- Global Properties ----------------------------#
+
+/outputDir:../bin/Debug/net8.0-windows/Content
+/intermediateDir:../obj/Debug/net8.0-windows/Content
+/platform:DesktopGL
+/config:
+/profile:HiDef
+/compress:True
+
+#-------------------------------- References --------------------------------#
+
+
+#---------------------------------- Content ---------------------------------#

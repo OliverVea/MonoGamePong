@@ -2,7 +2,7 @@
 
 using var game = new DIGame(services => services.RegisterServices())
 {
-    ContentRootDirectory = string.Empty
+    ContentRootDirectory = "Content"
 };
 
 game.Run();

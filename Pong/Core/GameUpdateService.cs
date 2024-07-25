@@ -1,11 +1,13 @@
 using System;
 using Microsoft.Xna.Framework;
+using Shared.Events;
 using Shared.Extensions;
 using Shared.Lifetime;
 
 namespace Pong.Core;
 
 public class GameUpdateService(
+    IEventInvoker<BallHitObjectEvent> ballHitObjectEventInvoker,
     GameInput gameInput,
     GameTime gameTime,
     GameState gameState,
@@ -50,6 +52,7 @@ public class GameUpdateService(
         {
             gameState.BallVelocity = gameState.BallVelocity.FlipHorizontal();
             nextPosition = CalculateNextPosition();
+            ballHitObjectEventInvoker.Invoke(new BallHitObjectEvent());
         }
 
         var collidesWithTop = nextPosition.Y < gameProperties.BallHeight;
@@ -59,6 +62,7 @@ public class GameUpdateService(
         {
             gameState.BallVelocity = gameState.BallVelocity.FlipVertical();
             nextPosition = CalculateNextPosition();
+            ballHitObjectEventInvoker.Invoke(new BallHitObjectEvent());
         }
 
         gameState.BallPosition = nextPosition;

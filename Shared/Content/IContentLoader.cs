@@ -1,6 +1,4 @@
-﻿using StrictId;
-
-namespace Shared.Content;
+﻿namespace Shared.Content;
 
 public interface IContentLoader<T>
 {

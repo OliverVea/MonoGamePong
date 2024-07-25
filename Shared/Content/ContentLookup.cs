@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Shared.Lifetime;
-using StrictId;
 
 namespace Shared.Content;
 
@@ -28,6 +27,13 @@ public class ContentLookup<T>(IEnumerable<IContentLoader<T>> contentLoaders) : I
     public bool TryGet(Id<T> contentId, [MaybeNullWhen(false)] out T content)
     {
         return _lookup.TryGetValue(contentId, out content);
+    }
+    
+    public OneOf<T, NotFound> TryGet(Id<T> contentId)
+    {
+        if (_lookup.TryGetValue(contentId, out var content)) return content;
+        
+        return new NotFound();
     }
 
     public T Get(Id<T> contentId)

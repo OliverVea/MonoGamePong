@@ -7,31 +7,32 @@
     #define PS_SHADERMODEL ps_4_0_level_9_1
 #endif
 
-float2 mousePosition = float2(0,0);
 Texture2D SpriteTexture;
 
-sampler SpriteTextureSampler = sampler_state
+sampler2D SpriteTextureSampler = sampler_state
 {
     Texture = <SpriteTexture>;
 };
 
 struct VertexShaderOutput
 {
-    float4 Position : SV_Position;
+    float4 Position : SV_POSITION;
     float4 Color : COLOR0;
     float2 TextureCoordinates : TEXCOORD0;
 };
 
 float4 MainPS(VertexShaderOutput input) : COLOR
 {
-    float4 col = tex2D(SpriteTextureSampler,input.TextureCoordinates) * input.Color;
-
-    float d = distance(mousePosition, input.Position.xy);
-    float scalar = saturate(d / 100.0) * 0.75;
-
-    col.gb *= scalar;
+    float4 color = tex2D(SpriteTextureSampler,input.TextureCoordinates) * input.Color;
     
-    return col;
+    float avg = (color.r + color.g + color.b) / 3;
+    
+    if (avg < 0.5)
+    {
+        return float4(0,0,0,0);
+    }
+    
+    return float4(1, 1, 1, color.a);
 }
 
 technique SpriteDrawing

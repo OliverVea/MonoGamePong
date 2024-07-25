@@ -13,18 +13,22 @@ public static class ServiceExtensions
 {
     public static IServiceCollection RegisterServices(this IServiceCollection services)
     {
-        services.RegisterContentLookup<CharacterSprite>();
-        services.RegisterContentLookup<TextureAtlas>();
-        services.RegisterContentLookup<Effect>();
-
-        services.RegisterInterfaces<CharacterAtlasLoader>();
-        services.RegisterInterfaces<SpriteEffect1Loader>();
-        services.RegisterInterfaces<PlayerCharacterSpriteLoader>();
-
         services.AddMouseHandling();
-
-        services.RegisterInterfaces<GameDrawerService>();
-
+        services.AddGameServices();
+        
         return services;
+    }
+    
+    private static void AddGameServices(this IServiceCollection services)
+    {
+        services.RegisterContentLookup<CharacterSprite>()
+            .RegisterContentLookup<TextureAtlas>()
+            .RegisterContentLookup<Effect>();
+
+        services.RegisterInterfaces<CharacterAtlasLoader>()
+            .RegisterInterfaces<SpriteEffect1Loader>()
+            .RegisterInterfaces<PlayerCharacterSpriteLoader>();
+
+        services.RegisterService<GameDrawerService>();
     }
 }

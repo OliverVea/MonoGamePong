@@ -9,4 +9,6 @@ public class GameState
     
     public Vector2 BallPosition { get; set; } = new(0.5f, 0.5f);
     public Vector2 BallVelocity { get; set; } = new(1, 1);
+    public int LeftScore { get; set; }
+    public int RightScore { get; set; }
 }

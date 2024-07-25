@@ -36,7 +36,6 @@ public class DIGame : Game
         
         _registerServices.Invoke(serviceCollection);
         
-        serviceCollection.AddSingleton(_ => new SpriteBatch(GraphicsDevice));
         serviceCollection.AddSingleton(_ => Content);
         serviceCollection.AddSingleton(_ => GraphicsDevice);
         serviceCollection.AddSingleton(_ => new GameConfiguration(this));
@@ -86,6 +85,9 @@ public class DIGame : Game
         foreach (var drawable in drawables) drawable.Draw();
 
         base.Draw(gameTime);
+        
+        var guiServices = _serviceScope.Value.ServiceProvider.GetServices<IGuiService>();
+        foreach (var guiService in guiServices) guiService.DrawGui();
     }
     
 }

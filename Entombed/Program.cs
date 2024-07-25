@@ -1,4 +1,4 @@
-﻿using FluidSimulation;
+﻿using Entombed;
 
 using var game = new DIGame(s => s.RegisterServices())
 {

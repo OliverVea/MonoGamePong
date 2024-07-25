@@ -18,6 +18,10 @@
       <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
     </ItemGroup>
     
+    <ItemGroup>
+      <ClCompile Include="Content\fonteffect.fx" />
+    </ItemGroup>
+    
     <Target Name="RestoreDotnetTools" BeforeTargets="Restore">
         <Message Text="Restoring dotnet tools" Importance="High"/>
         <Exec Command="dotnet tool restore"/>

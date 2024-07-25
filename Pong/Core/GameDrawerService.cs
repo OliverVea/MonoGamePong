@@ -6,19 +6,21 @@ using Shared.Lifetime;
 namespace Pong.Core;
 
 public class GameDrawerService(
-    SpriteBatch spriteBatch,
+    GraphicsDevice graphicsDevice,
     GameState gameState,
     GameProperties gameProperties,
     ContentLookup<Texture2D> textureLookup) : IDrawService
 {
+    private readonly SpriteBatch _spriteBatch = new(graphicsDevice);
+    
     public void Draw()
     {
-        spriteBatch.Begin();
+        _spriteBatch.Begin();
         
         DrawPaddles();
         DrawBall();
         
-        spriteBatch.End();
+        _spriteBatch.End();
     }
 
     private void DrawPaddles()
@@ -36,7 +38,7 @@ public class GameDrawerService(
 
         var paddleTexture = textureLookup.Get(Ids.Paddle);
         
-        spriteBatch.Draw(paddleTexture, position, Color.White);
+        _spriteBatch.Draw(paddleTexture, position, Color.White);
     }
 
     private void DrawBall()
@@ -48,7 +50,7 @@ public class GameDrawerService(
 
         var ballTexture = textureLookup.Get(Ids.Ball);
         
-        spriteBatch.Draw(ballTexture, position, Color.White);
+        _spriteBatch.Draw(ballTexture, position, Color.White);
     }
     
     private static float ToScreenSpace(float gameSpaceValue, float gameSpaceSize, int screenSize)

@@ -6,14 +6,16 @@ namespace Shared.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static void RegisterThisAndInterfaces<T>(this IServiceCollection services, ServiceLifetime serviceLifetime = ServiceLifetime.Singleton) where T : class
+    public static IServiceCollection RegisterSelfAndInterfaces<T>(this IServiceCollection services, ServiceLifetime serviceLifetime = ServiceLifetime.Singleton) where T : class
     {
         var serviceDescriptor = new ServiceDescriptor(typeof(T), typeof(T), serviceLifetime);
         services.Add(serviceDescriptor);
         services.RegisterInterfaces<T>(serviceLifetime);
+        
+        return services;
     }
     
-    public static void RegisterInterfaces<T>(this IServiceCollection services, ServiceLifetime serviceLifetime = ServiceLifetime.Singleton) where T : class
+    public static IServiceCollection RegisterInterfaces<T>(this IServiceCollection services, ServiceLifetime serviceLifetime = ServiceLifetime.Singleton) where T : class
     {
         var serviceType = typeof(T);
         var interfaces = serviceType.GetInterfaces();
@@ -23,9 +25,11 @@ public static class ServiceCollectionExtensions
             var serviceDescriptor = new ServiceDescriptor(interfaceType, serviceType, serviceLifetime);
             services.Add(serviceDescriptor);
         }
+        
+        return services;
     }
     
-    public static void RegisterService<T>(this IServiceCollection services, ServiceLifetime serviceLifetime = ServiceLifetime.Singleton) where T : class
+    public static IServiceCollection RegisterService<T>(this IServiceCollection services, ServiceLifetime serviceLifetime = ServiceLifetime.Singleton) where T : class
     {
         var serviceDescriptor = new ServiceDescriptor(typeof(T), typeof(T), serviceLifetime);
         services.Add(serviceDescriptor);
@@ -37,12 +41,16 @@ public static class ServiceCollectionExtensions
             var interfaceDescriptor = new ServiceDescriptor(serviceType, sp => sp.GetRequiredService<T>(), serviceLifetime);
             services.Add(interfaceDescriptor);
         }
+        
+        return services;
     }
     
-    public static void RegisterContentLookup<T>(this IServiceCollection services)
+    public static IServiceCollection RegisterContentLookup<T>(this IServiceCollection services)
     {
         services.AddSingleton<ContentLookup<T>>();
         services.AddTransient<IStartupService>(sp => sp.GetRequiredService<ContentLookup<T>>());
+        
+        return services;
     }
     
     
@@ -50,11 +58,13 @@ public static class ServiceCollectionExtensions
     private static readonly Type UpdateServiceType = typeof(IUpdateService);
     private static readonly Type DrawServiceType = typeof(IDrawService);
     private static readonly Type InputServiceType = typeof(IInputService);
+    private static readonly Type GuiServiceType = typeof(IGuiService);
     
     private static readonly Type[] ServiceTypes = [
         StartupServiceType,
         UpdateServiceType,
         DrawServiceType,
-        InputServiceType
+        InputServiceType,
+        GuiServiceType
     ];
 }
