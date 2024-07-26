@@ -9,4 +9,6 @@ public interface IDrawService
     /// Called on the drawing phase of the game loop.
     /// </summary>
     void Draw();
+
+    public int DrawPriority => 0;
 }

@@ -3,8 +3,9 @@ using Microsoft.Xna.Framework.Graphics;
 using ShaderSandbox.Game;
 using Shared.Content;
 using Shared.Extensions;
+using Shared.Input;
+using Shared.Input.Mouse;
 using Shared.Lifetime;
-using Shared.Mouse;
 using Shared.Sprites;
 
 namespace ShaderSandbox;

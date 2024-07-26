@@ -1,4 +1,9 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Entombed.Code;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Xna.Framework.Graphics;
+using Shared.Extensions;
+using Shared.Input;
+using Shared.Metrics;
 
 namespace Entombed;
 
@@ -6,37 +11,13 @@ public static class ServiceExtensions
 {
     public static IServiceCollection RegisterServices(this IServiceCollection services)
     {
-        services.AddSystems();
-        services.AddGameServices();
+        services.AddInputHandling();
+        services.AddMetricsHandling();
+        
+        services.RegisterInterfaces<ContentLoader>();
+
+        services.RegisterContentLookup<SpriteFont>();
 
         return services;
-    }
-    
-    /// <summary>
-    /// Registers your game systems.
-    /// </summary>
-    /// <example>
-    /// <code>
-    /// services.AddMouseHandling();
-    /// services.AddScreenHandling();
-    /// services.AddIsometricCamera();
-    /// </code>
-    /// </example>
-    /// <param name="services"></param>
-    private static void AddSystems(this IServiceCollection services)
-    {
-    }
-
-    /// <summary>
-    /// Registers your game services.
-    /// See following game system interfaces:
-    /// <see cref="Shared.Lifetime.IStartupService"/>,
-    /// <see cref="Shared.Lifetime.IInputService"/>,
-    /// <see cref="Shared.Lifetime.IUpdateService"/>,
-    /// <see cref="Shared.Lifetime.IDrawService"/>
-    /// </summary>
-    /// <param name="services"></param>
-    private static void AddGameServices(this IServiceCollection services)
-    {
     }
 }

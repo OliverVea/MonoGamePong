@@ -5,13 +5,11 @@ namespace Shared.Camera;
 
 public static class ServiceExtensions
 {
-    public static IServiceCollection AddIsometricCamera(this IServiceCollection services, Action<CameraConfiguration>? configurationAction = null)
+    public static IServiceCollection AddIsometricCameraHandling(this IServiceCollection services, Action<IsometricCameraConfiguration>? configurationAction = null)
     {
-        services.AddSingleton<CameraInput>();
-        services.AddSingleton<Camera>();
-        services.RegisterService<CameraUpdateService>();
-
-        var configuration = new CameraConfiguration();
+        services.AddSingleton<IsometricCamera>();
+        
+        var configuration = new IsometricCameraConfiguration();
 
         configurationAction?.Invoke(configuration);
 

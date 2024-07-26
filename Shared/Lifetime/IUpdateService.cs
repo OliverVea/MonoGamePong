@@ -9,4 +9,6 @@ public interface IUpdateService
     /// Called on the update phase of the game loop.
     /// </summary>
     void Update();
+
+    public int UpdatePriority => 0;
 }

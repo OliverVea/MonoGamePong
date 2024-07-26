@@ -19,7 +19,7 @@ public static class ServiceExtensions
     /// <code>
     /// services.AddMouseHandling();
     /// services.AddScreenHandling();
-    /// services.AddIsometricCamera();
+    /// services.AddIsometricCameraHandling();
     /// </code>
     /// </example>
     /// <param name="services"></param>

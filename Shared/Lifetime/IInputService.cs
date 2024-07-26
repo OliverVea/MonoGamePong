@@ -9,4 +9,6 @@ public interface IInputService
     /// Called on the input phase of the game loop.
     /// </summary>
     void Input();
+
+    public int InputPriority => 0;
 }

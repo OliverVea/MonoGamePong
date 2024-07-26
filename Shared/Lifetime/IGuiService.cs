@@ -9,4 +9,6 @@ public interface IGuiService
     /// Called on the GUI drawing phase of the game loop.
     /// </summary>
     void DrawGui();
+
+    public int GuiPriority => 0;
 }
