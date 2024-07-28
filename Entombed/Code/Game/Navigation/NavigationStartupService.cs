@@ -7,7 +7,7 @@ namespace Entombed.Code.Game.Navigation;
 
 public class NavigationStartupService(Level level, NavigationGraphService navigationGraphService, NavigationState navigationState) : IStartupService
 {
-    private const float NavigationGraphRadius = 0.25f;
+    private const float NavigationGraphRadius = 0.75f;
 
     public void Startup()
     {

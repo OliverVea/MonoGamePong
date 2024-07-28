@@ -34,6 +34,10 @@ public class DIGame : Game
         _sceneManager = new SceneManager(initialScene ?? Scene.Empty);
 
         _graphics.Value.GraphicsProfile = GraphicsProfile.HiDef;
+        
+        // Set 1280x720 resolution
+        _graphics.Value.PreferredBackBufferWidth = 1280;
+        _graphics.Value.PreferredBackBufferHeight = 720;
     }
 
     protected override void Initialize()

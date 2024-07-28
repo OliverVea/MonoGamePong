@@ -1,4 +1,5 @@
 ﻿using Entombed.Code.Game.Characters;
+using Entombed.Code.Game.Characters.Players;
 using Shared.Camera;
 using Shared.Lifetime;
 using Shared.Metrics;

@@ -6,7 +6,7 @@ namespace Shared.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection RegisterSelfAndInterfaces<T>(this IServiceCollection services, ServiceLifetime serviceLifetime = ServiceLifetime.Singleton) where T : class
+    public static IServiceCollection RegisterSelfAndInterfaces<T>(this IServiceCollection services, ServiceLifetime serviceLifetime = ServiceLifetime.Transient) where T : class
     {
         var serviceDescriptor = new ServiceDescriptor(typeof(T), typeof(T), serviceLifetime);
         services.Add(serviceDescriptor);
@@ -15,7 +15,7 @@ public static class ServiceCollectionExtensions
         return services;
     }
     
-    public static IServiceCollection RegisterInterfaces<T>(this IServiceCollection services, ServiceLifetime serviceLifetime = ServiceLifetime.Singleton) where T : class
+    public static IServiceCollection RegisterInterfaces<T>(this IServiceCollection services, ServiceLifetime serviceLifetime = ServiceLifetime.Transient) where T : class
     {
         var serviceType = typeof(T);
         var interfaces = serviceType.GetInterfaces();
@@ -29,7 +29,7 @@ public static class ServiceCollectionExtensions
         return services;
     }
     
-    public static IServiceCollection RegisterService<T>(this IServiceCollection services, ServiceLifetime serviceLifetime = ServiceLifetime.Singleton) where T : class
+    public static IServiceCollection RegisterService<T>(this IServiceCollection services, ServiceLifetime serviceLifetime = ServiceLifetime.Transient) where T : class
     {
         var serviceType = typeof(T);
         

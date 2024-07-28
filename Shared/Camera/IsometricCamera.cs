@@ -1,5 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using Shared.Geometry;
+using Shared.Geometry.Shapes;
 
 namespace Shared.Camera;
 

@@ -1,8 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
+using Shared.Geometry.Shapes;
+using Rectangle = Shared.Geometry.Shapes.Rectangle;
 
-namespace Shared.Geometry;
+namespace Shared.Geometry.Helpers;
 
-public static class GeometryHelper
+internal static class GeometryHelper
 {
     public static bool Overlaps(LineSegment a, Vector2 b)
     {
@@ -96,4 +98,26 @@ public static class GeometryHelper
     public static bool Overlaps(Vector2 a, Circle b) => Overlaps(b, a);
     public static bool Overlaps(Vector2 a, Rectangle b) => Overlaps(b, a);
 
+    public static float Distance(Vector2 playerPosition, LineSegment doorPosition)
+    {
+        var closest = ClosestPointOnLineSegment(doorPosition, playerPosition);
+        
+        return Vector2.Distance(playerPosition, closest);
+
+        static Vector2 ClosestPointOnLineSegment(LineSegment lineSegment, Vector2 bCenter)
+        {
+            var a = lineSegment.Start;
+            var b = lineSegment.End;
+        
+            var ap = bCenter - a;
+            var ab = b - a;
+        
+            var t = Vector2.Dot(ap, ab) / Vector2.Dot(ab, ab);
+        
+            if (t < 0) return a;
+            if (t > 1) return b;
+        
+            return a + ab * t;
+        }
+    }
 }

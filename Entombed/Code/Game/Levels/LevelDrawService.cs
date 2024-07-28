@@ -17,8 +17,17 @@ public class LevelDrawService(Level level, IsometricCamera isometricCamera)
             {
                 var wallScreenSpace = isometricCamera.WorldToScreen(wall);
                 
-                spriteBatch.DrawLine(wallScreenSpace.Start, wallScreenSpace.End, Color.White);
+                spriteBatch.DrawLine(wallScreenSpace.Start, wallScreenSpace.End, Color.White, room.Revealed ? 3 : 1);
             }
+        }
+
+        foreach (var door in level.Doors)
+        {
+            if (door.Open) continue;
+
+            var doorScreenSpace = isometricCamera.WorldToScreen(door.LineSegment);
+                
+            spriteBatch.DrawLine(doorScreenSpace.Start, doorScreenSpace.End, Color.Red);
         }
     }
 }

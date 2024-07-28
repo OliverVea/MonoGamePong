@@ -8,7 +8,7 @@
   "identity": "OliverVea.Monogame.DITemplate",
   "name": "MonoGame Console Application with Dependency Injection",
   "shortName": "monogame-di",
-    "sourceName": "DITemplate",
+  "sourceName": "DITemplate",
   "tags": {
     "language": "C#",
     "type": "project"

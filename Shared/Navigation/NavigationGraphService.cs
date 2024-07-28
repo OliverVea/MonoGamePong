@@ -1,5 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Shared.Geometry;
+using Shared.Geometry.Helpers;
+using Shared.Geometry.Shapes;
 
 namespace Shared.Navigation;
 

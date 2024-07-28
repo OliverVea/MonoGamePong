@@ -1,11 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
+using Shared.Geometry.Definitions;
 
-namespace Shared.Geometry;
+namespace Shared.Geometry.Shapes;
 
-public readonly struct Rectangle
+public readonly partial struct Rectangle(Vector2 center, Vector2 size) : IShape
 {
-    public required Vector2 Center { get; init; }
-    public required Vector2 Size { get; init; }
+    public Vector2 Center { get; } = center;
+    public Vector2 Size { get; } = size;
 
     public float Left => Center.X - Size.X / 2;
     public float Right => Center.X + Size.X / 2;

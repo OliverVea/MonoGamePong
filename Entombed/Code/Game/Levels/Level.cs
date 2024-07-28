@@ -1,5 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
-using Shared.Geometry;
+using Shared.Geometry.Definitions;
+using Shared.Geometry.Shapes;
+using Rectangle = Shared.Geometry.Shapes.Rectangle;
 
 namespace Entombed.Code.Game.Levels;
 
@@ -12,13 +14,16 @@ public class Level
 public class Room
 {
     public required LineSegment[] Walls { get; init; }
+    public required ShapeInput[] Area { get; init; }
+    public bool Revealed { get; set; } = false;
 }
 
 public class Door
 {
-    public required LineSegment Position { get; init; }
+    public required LineSegment LineSegment { get; init; }
     public required Room From { get; init; }
     public required Room To { get; init; }
+    public bool Open { get; set; } = false;
 }
 
 public static class Levels
@@ -29,10 +34,14 @@ public static class Levels
         [
             new LineSegment(-3, -3, -0.5f, -3),
             new LineSegment(0.5f, -3, 3, -3),
-            new LineSegment(-3, -3, -3, 3),
-            new LineSegment(-3, 3, 3, 3),
-            new LineSegment(3, 3, 3, -3)
-        ]
+            new LineSegment(3, -3, 3, 3),
+            new LineSegment(3, 3, -3, 3),
+            new LineSegment(-3, 3, -3, -3),
+        ],
+        Area = [
+            new Rectangle(new Vector2(0, 0), new Vector2(6, 6))
+        ],
+        Revealed = true
     };
 
     private static readonly Room Level1Room2 = new()
@@ -43,6 +52,9 @@ public static class Levels
             new LineSegment(-3, -3, -3, -6),
             new LineSegment(-3, -6, 3, -6),
             new LineSegment(3, -6, 3, -3)
+        ],
+        Area = [
+            new Rectangle(new Vector2(0, -4.5f), new Vector2(6, 3))
         ]
     };
     
@@ -58,7 +70,7 @@ public static class Levels
             {
                 From = Level1Room1,
                 To = Level1Room2,
-                Position = new LineSegment(new Vector2(0.5f, -3), new Vector2(0.5f, 3))
+                LineSegment = new LineSegment(new Vector2(-0.5f, -3), new Vector2(0.5f, -3))
             }
         ]
     };

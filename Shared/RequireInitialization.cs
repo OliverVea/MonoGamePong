@@ -1,6 +1,6 @@
 namespace Shared;
 
-public class RequireInitialization<T>(bool initializeOnce = true)
+public sealed class RequireInitialization<T>(bool initializeOnce = true)
 {
     private T? _value;
     

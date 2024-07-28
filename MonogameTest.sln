@@ -1,5 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+# 
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pong", "Pong\Pong.csproj", "{C2014E65-D477-45D7-A34D-7BB260ADA519}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{E1982F73-EEB4-40FD-AAD4-14150E50DB2E}"
@@ -21,6 +22,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DITemplate", "DITemplate\DITemplate.csproj", "{7117E64D-1F9C-496A-9037-D7F7DF36F38F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Entombed", "Entombed\Entombed.csproj", "{8B1DCDF2-5510-4389-A56A-0F059DEECC89}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Entombed.LevelEditor", "Entombed.LevelEditor\Entombed.LevelEditor.csproj", "{71C90CEF-A457-4011-AD2D-22747F425781}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -48,5 +51,9 @@ Global
 		{8B1DCDF2-5510-4389-A56A-0F059DEECC89}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8B1DCDF2-5510-4389-A56A-0F059DEECC89}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8B1DCDF2-5510-4389-A56A-0F059DEECC89}.Release|Any CPU.Build.0 = Release|Any CPU
+		{71C90CEF-A457-4011-AD2D-22747F425781}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71C90CEF-A457-4011-AD2D-22747F425781}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71C90CEF-A457-4011-AD2D-22747F425781}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71C90CEF-A457-4011-AD2D-22747F425781}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
