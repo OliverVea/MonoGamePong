@@ -1,5 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -19,6 +20,7 @@ public class DIGame : Game
     private readonly IServiceCollection _globalServiceCollection = new ServiceCollection();
     private readonly RequireInitialization<ServiceProvider> _serviceProvider = new(initializeOnce: false);
     private readonly RequireInitialization<IServiceScope> _serviceScope = new(initializeOnce: false);
+    private readonly RequireInitialization<ILogger<DIGame>> _logger = new();
     
     public required string ContentRootDirectory
     {
@@ -47,10 +49,17 @@ public class DIGame : Game
         _globalServiceCollection.AddSingleton(_ => new GameConfiguration(this));
         _globalServiceCollection.AddSingleton(_ => new GameTime());
         _globalServiceCollection.AddSingleton(_ => _sceneManager);
+
+        _globalServiceCollection.AddLogging(c => c.AddSimpleConsole(o =>
+        {
+            o.SingleLine = true;
+        }));
         
         _configureGlobalServices?.Invoke(_globalServiceCollection);
 
         _serviceProvider.Value = BuildServiceProvider();
+        
+        _logger.Value = _serviceProvider.Value.GetRequiredService<ILogger<DIGame>>();
         
         base.Initialize();
     }
@@ -75,6 +84,8 @@ public class DIGame : Game
 
     private void SceneStartup()
     {
+        _logger.Value.LogInformation("Scene startup");
+        
         var startups = _serviceProvider.Value
             .GetServices<IStartupService>()
             .OrderByDescending(x => x.StartupPriority);
