@@ -1,4 +1,6 @@
+using System;
 using Microsoft.Xna.Framework;
+using Shared.Random;
 
 namespace Entombed.Code.Game.Characters;
 
@@ -8,11 +10,12 @@ public abstract class Character
     
     public Id<Character> Id { get; } = Id<Character>.NewId();
     public Vector2 Position { get; set; } = Vector2.Zero;
-    public Vector2 Direction { get; set; } = Vector2.Zero;
-    public virtual float Radius { get; } = 0.15f;
-    public float AttackRange { get; set; } = 0.5f;
-    public float AttackAngle { get; set; } = MathHelper.PiOver4;
-    public float AttackDamage { get; set; } = 0.1f;
+    public Vector2 Direction { get; set; } = RandomHelper.RandomDirection();
+    public float Radius => 0.15f;
+    public float AttackRange => 0.5f;
+    public float AttackAngle => MathHelper.PiOver4;
+    public float AttackDamage => 0.1f;
+    public DateTime AttackedTime { get; set; }
     public abstract Color Color { get; }
-    public float Speed => 5f;
+    public virtual float Speed => 5f;
 }

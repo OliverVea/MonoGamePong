@@ -17,7 +17,7 @@ public class PlayerUpdateService(
     TimeMetrics timeMetrics,
     LevelCollisionService levelCollisionService,
     DoorService doorService,
-    Level level) : IUpdateService
+    DoorLookup doorLookup) : IUpdateService
 {
     public void Update()
     {
@@ -43,7 +43,7 @@ public class PlayerUpdateService(
     {
         if (!playerInput.Use) return;
         
-        var (closestDoor, distance) = level.Doors.Values
+        var (closestDoor, distance) = doorLookup.Values
             .Select(x => (Door: x, Distance: x.LineSegment.Distance(player.Position)))
             .MinBy(x => x.Distance);
         

@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Diagnostics;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.Extensions.Logging;
 
@@ -11,11 +12,12 @@ internal sealed class EventInvoker<T>(BaseEvent<T> sourceBaseEvent, ILogger<T> l
         ReferenceHandler = ReferenceHandler.Preserve
     };
     
+    [StackTraceHidden]
     public void Invoke(T value)
     {
-        sourceBaseEvent.OnEvent?.Invoke(value);
-        
         logger.LogInformation("{Event} invoked", value);
         logger.LogDebug("{Event} invoked with {Values}", value, JsonSerializer.Serialize(value, _jsonSerializerOptions));
+        
+        sourceBaseEvent.OnEvent?.Invoke(value);
     }
 }

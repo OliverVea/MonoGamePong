@@ -2,20 +2,20 @@ using Microsoft.Extensions.Logging;
 
 namespace Entombed.Code.Game.Levels;
 
-public class DoorService(IEventInvoker<DoorOpenedEvent> doorOpenedEvent, Level level, ILogger<DoorService> logger)
+public class DoorService(IEventInvoker<DoorOpenedEvent> doorOpenedEvent, DoorLookup doorLookup, RoomLookup roomLookup, ILogger<DoorService> logger)
 {
     public void OpenDoor(Id<Door> id)
     {
-        if (!level.Doors.TryGetValue(id, out var door)) return;
+        if (!doorLookup.TryGet(id, out var door)) return;
         
         if (door.Open) return;
         
         door.Open = true;
         
-        if (level.Rooms.TryGetValue(door.From, out var fromRoom)) fromRoom.Revealed = true;
+        if (roomLookup.TryGet(door.From, out var fromRoom)) fromRoom.Revealed = true;
         else logger.LogWarning("Room {RoomId} not found", door.From);
         
-        if (level.Rooms.TryGetValue(door.To, out var toRoom)) toRoom.Revealed = true;
+        if (roomLookup.TryGet(door.To, out var toRoom)) toRoom.Revealed = true;
         else logger.LogWarning("Room {RoomId} not found", door.To);
         
         doorOpenedEvent.Invoke(new DoorOpenedEvent(id));

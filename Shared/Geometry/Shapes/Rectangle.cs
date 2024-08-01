@@ -25,4 +25,7 @@ public readonly partial struct Rectangle(Vector2 center, Vector2 size) : IShape
         new LineSegment(BottomRight, BottomLeft),
         new LineSegment(BottomLeft, TopLeft)
     ];
+
+    public double Width => Size.X;
+    public double Height => Size.Y;
 }

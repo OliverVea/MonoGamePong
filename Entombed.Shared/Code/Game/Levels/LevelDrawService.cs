@@ -9,14 +9,14 @@ public class LevelDrawService(Level level, IsometricCamera isometricCamera)
 {
     public void Draw(SpriteBatch spriteBatch)
     {
-        var revealedRooms = level.Rooms.Values.Where(room => room.Revealed).ToArray();
+        var revealedRooms = level.Rooms.Where(room => room.Revealed).ToArray();
 
         foreach (var room in revealedRooms)
         {
             DrawRoom(room, spriteBatch);
         }
 
-        foreach (var door in level.Doors.Values)
+        foreach (var door in level.Doors)
         {
             DrawDoor(door, spriteBatch);
         }

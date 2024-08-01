@@ -1,4 +1,5 @@
-﻿using Entombed.Code.Game.Characters.Events;
+﻿using System;
+using Entombed.Code.Game.Characters.Events;
 using Microsoft.Extensions.Logging;
 
 namespace Entombed.Code.Game.Characters;
@@ -11,11 +12,12 @@ public class CharacterDamageService(
 {
     public void Damage(Id<Character> attackerId, Id<Character> targetId, float damage)
     {
-        if (attackerId == targetId) return;
+        if (attackerId == targetId || damage == 0f) return;
         
         if (!characterLookup.TryGet(targetId, out var target)) return;
         
         target.Health -= damage;
+        target.AttackedTime = DateTime.Now;
         
         logger.LogInformation($"{attackerId} damaged {target} for {damage}");
 

@@ -7,7 +7,10 @@ using Shared.Lifetime;
 
 namespace Entombed.Code.Game.Characters.Enemies;
 
-public class EnemySpawningService(IEventInvoker<CharacterSpawnedEvent> characterSpawnedEvent, Level level, IEventObserver<DoorOpenedEvent> doorOpenedEvent) : IStartupService
+public class EnemySpawningService(
+    IEventInvoker<CharacterSpawnedEvent> characterSpawnedEvent,
+    IEventObserver<DoorOpenedEvent> doorOpenedEvent,
+    RoomLookup roomLookup) : IStartupService
 {
 
     public void Startup()
@@ -17,7 +20,7 @@ public class EnemySpawningService(IEventInvoker<CharacterSpawnedEvent> character
     
     private void OnDoorOpened(DoorOpenedEvent e)
     {
-        var unlitRooms = level.Rooms.Values.Where(x => !x.Lit);
+        var unlitRooms = roomLookup.Values.Where(x => !x.Lit);
         
         foreach (var room in unlitRooms) SpawnEnemiesForRoom(room);
     }

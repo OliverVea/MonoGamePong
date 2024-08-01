@@ -1,3 +1,4 @@
+using Microsoft.Xna.Framework;
 using Shared.Geometry.Definitions;
 using Shared.Geometry.Helpers;
 
@@ -39,5 +40,10 @@ public readonly partial struct Rectangle
             rectangle => OverlapsHelper.Overlaps(thisRectangle, rectangle),
             triangle => OverlapsHelper.Overlaps(triangle, thisRectangle)
             );
+    }
+
+    public Vector2 SamplePoint(float padding)
+    {
+        return SamplePointHelper.SamplePoint(this, padding);
     }
 }

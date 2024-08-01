@@ -1,9 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <OutputType>WinExe</OutputType>
-        <TargetFramework>net8.0-windows</TargetFramework>
-        <UseWindowsForms>true</UseWindowsForms>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net8.0</TargetFramework>
         <Nullable>enable</Nullable>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <RootNamespace>Entombed</RootNamespace>
@@ -11,6 +10,7 @@
 
     <ItemGroup>
         <ProjectReference Include="../Entombed.Shared/Entombed.Shared.csproj"/>
+        <ProjectReference Include="../Shared/Shared.csproj"/>
     </ItemGroup>
 
 </Project>

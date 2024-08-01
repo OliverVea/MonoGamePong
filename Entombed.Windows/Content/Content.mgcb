@@ -1,8 +1,8 @@
 
 #----------------------------- Global Properties ----------------------------#
 
-/outputDir:../bin/Debug/net8.0-windows/Content
-/intermediateDir:../obj/Debug/net8.0-windows/Content
+/outputDir:../bin/Debug/net8.0/Content
+/intermediateDir:../obj/Debug/net8.0/Content
 /platform:DesktopGL
 /config:
 /profile:HiDef

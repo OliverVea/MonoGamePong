@@ -8,7 +8,6 @@ using Entombed.Code.Game.Gui;
 using Entombed.Code.Game.Navigation;
 using Microsoft.Extensions.DependencyInjection;
 using Shared.Camera;
-using Shared.Events;
 using Shared.Extensions;
 using Shared.Navigation;
 using Shared.Scenes;
@@ -25,7 +24,6 @@ public class GameScene : Scene
         serviceCollection.AddNavigationHandling();
         serviceCollection.AddIsometricCameraHandling();
         
-        
         serviceCollection.RegisterService<GameDrawService>();
         serviceCollection.RegisterService<GameGuiService>();
         
@@ -38,6 +36,7 @@ public class GameScene : Scene
         serviceCollection.AddTransient<CharacterDamageService>();
         serviceCollection.AddSingleton<CharacterLookup>();
         serviceCollection.RegisterService<EnemySpawningService>();
+        serviceCollection.RegisterService<EnemyUpdateService>();
         serviceCollection.AddSingleton<Player>();
         serviceCollection.AddScoped<PlayerInput>();
         serviceCollection.AddSingleton<GameInputScheme>();
@@ -51,6 +50,8 @@ public class GameScene : Scene
         serviceCollection.RegisterService<MetricsGuiService>();
         
         // Levels
+        serviceCollection.AddSingleton<DoorLookup>();
+        serviceCollection.AddSingleton<RoomLookup>();
         serviceCollection.AddTransient<DoorService>();
         serviceCollection.RegisterService<LevelCollisionService>();
         serviceCollection.AddSingleton<Level>(_ => Levels.Levels.Level1);
@@ -60,7 +61,6 @@ public class GameScene : Scene
         serviceCollection.AddSingleton<NavigationState>();
         serviceCollection.RegisterService<NavigationStartupService>();
         serviceCollection.RegisterSelfAndInterfaces<NavigationGuiService>();
-        
         
         // Events
         serviceCollection.AddEvent<CharacterDamagedEvent>();

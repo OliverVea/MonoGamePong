@@ -1,4 +1,6 @@
+using Microsoft.Xna.Framework;
 using Shared.Geometry.Shapes;
+using Rectangle = Shared.Geometry.Shapes.Rectangle;
 
 namespace Shared.Geometry.Definitions;
 
@@ -36,6 +38,15 @@ public class ShapeInput : OneOfBase<Circle, Rectangle, Triangle>, IShape
             circle => circle.Overlaps(shapeInput),
             rectangle => rectangle.Overlaps(shapeInput),
             triangle => triangle.Overlaps(shapeInput)
+        );
+    }
+    
+    public Vector2 SamplePoint(float padding = 0)
+    {
+        return Match(
+            circle => circle.SamplePoint(padding),
+            rectangle => rectangle.SamplePoint(padding),
+            triangle => triangle.SamplePoint(padding)
         );
     }
 }
