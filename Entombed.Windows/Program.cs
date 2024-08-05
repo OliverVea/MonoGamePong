@@ -1,5 +1,5 @@
 ﻿using Entombed;
-using Entombed.Code.Game;
+using Entombed.Game;
 using Shared;
 
 using var game = new DIGame(s => s.RegisterServices(), new GameScene())

@@ -39,11 +39,13 @@ public class PathfindingService
         }
         
         if (path == null) return new NotFound();
+
+        var nodeQueue = path.Select(i => graph.Nodes[i]).ToArray();
         
         return new NavigationPath
         {
             Graph = graph,
-            Nodes = path.Select(i => graph.Nodes[i]).ToArray()
+            Nodes = nodeQueue
         };
     }
 }

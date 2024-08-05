@@ -1,5 +1,4 @@
-﻿using Entombed.Code;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework.Graphics;
 using Shared.Extensions;
 using Shared.Input;

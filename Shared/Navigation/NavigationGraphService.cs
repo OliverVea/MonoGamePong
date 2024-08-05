@@ -1,5 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using Shared.Geometry;
+using Shared.Geometry.Definitions;
 using Shared.Geometry.Helpers;
 using Shared.Geometry.Shapes;
 
@@ -9,14 +9,14 @@ public class NavigationGraphService
 {
     private const float EdgeDistanceScale = 1.5f;
     
-    public NavigationGraph BuildNavigationGraph(IEnumerable<LineSegment> levelGeometry, float cellSize)
+    public NavigationGraph BuildNavigationGraph(IEnumerable<LineSegment> levelGeometry, IReadOnlyCollection<ShapeInput> areas, float cellSize)
     {
         if (levelGeometry is not ICollection<LineSegment> levelGeometryCollection)
         {
             levelGeometryCollection = levelGeometry.ToArray();
         }
         
-        var nodes = SampleNavigationNode(levelGeometryCollection, cellSize);
+        var nodes = SampleNavigationNode(levelGeometryCollection, areas, cellSize);
         
         var edges = new MatrixLookup<bool>(nodes.Length, nodes.Length);
         var weights = new MatrixLookup<float>(nodes.Length, nodes.Length);
@@ -62,7 +62,8 @@ public class NavigationGraphService
         };
     }
 
-    private NavigationNode[] SampleNavigationNode(ICollection<LineSegment> levelGeometry, float cellSize, int padding = 1)
+    private NavigationNode[] SampleNavigationNode(ICollection<LineSegment> levelGeometry,
+        IReadOnlyCollection<ShapeInput> areas, float cellSize, int padding = 2)
     {
         var levelGeometryVertices = levelGeometry.SelectMany(x => new[] {x.Start, x.End}).Distinct().ToArray();
         
@@ -88,10 +89,10 @@ public class NavigationGraphService
                 
                 var position = new Vector2(x, y);
 
-                if (!levelGeometry.Any(ls => GeometryHelper.Overlaps(ls, position)))
-                {
-                    positions.Add(new Vector2(x, y));
-                }
+                if (levelGeometry.Any(ls => GeometryHelper.Overlaps(ls, position))) continue;
+                if (!areas.Any(area => area.Contains(position))) continue;
+
+                positions.Add(new Vector2(x, y));
             }
         }
         
