@@ -11,4 +11,5 @@ public interface IGuiService
     void DrawGui();
 
     public int GuiPriority => 0;
+    public bool Active => true;
 }

@@ -2,6 +2,7 @@
 using System.Linq;
 using Entombed.Game.Characters.Enemies;
 using Entombed.Game.Levels;
+using Entombed.Game.Menu;
 using Microsoft.Xna.Framework;
 using Shared.Geometry.Shapes;
 using Shared.Lifetime;
@@ -10,6 +11,7 @@ using Shared.Metrics;
 namespace Entombed.Game.Characters.Players;
 
 public class PlayerUpdateService(
+    GamePaused gamePaused,
     Player player,
     PlayerInput playerInput,
     CharacterLookup characterLookup,
@@ -20,6 +22,8 @@ public class PlayerUpdateService(
     RoomLookup roomLookup,
     DoorLookup doorLookup) : IUpdateService
 {
+    public bool Active => !gamePaused.Paused;
+    
     public void Update()
     {
         if (playerInput.Pause) return;

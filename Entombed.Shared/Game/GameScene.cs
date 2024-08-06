@@ -8,6 +8,7 @@ using Entombed.Game.Characters.Players;
 using Entombed.Game.Gui;
 using Entombed.Game.Levels;
 using Entombed.Game.Levels.Serialization;
+using Entombed.Game.Menu;
 using Entombed.Game.Navigation;
 using Microsoft.Extensions.DependencyInjection;
 using Shared.Camera;
@@ -27,24 +28,25 @@ public class GameScene : Scene
         serviceCollection.AddNavigationHandling();
         serviceCollection.AddIsometricCameraHandling();
         
-        serviceCollection.RegisterService<GameDrawService>();
-        serviceCollection.RegisterService<GameGuiService>();
+        serviceCollection.RegisterSelfAndInterfaces<GameDrawService>();
+        serviceCollection.RegisterSelfAndInterfaces<GameGuiService>();
+        
+        serviceCollection.AddSingleton<GamePaused>();
         
         // Camera
         serviceCollection.AddScoped<CameraInput>();
-        serviceCollection.RegisterService<CameraInputService>();
-        serviceCollection.RegisterService<CameraUpdateService>();
+        serviceCollection.RegisterSelfAndInterfaces<CameraInputService>();
+        serviceCollection.RegisterSelfAndInterfaces<CameraUpdateService>();
         
         // Characters
         serviceCollection.AddTransient<CharacterDamageService>();
         serviceCollection.AddSingleton<CharacterLookup>();
-        serviceCollection.RegisterService<EnemySpawningService>();
-        serviceCollection.RegisterService<EnemyUpdateService>();
+        serviceCollection.RegisterSelfAndInterfaces<EnemySpawningService>();
+        serviceCollection.RegisterSelfAndInterfaces<EnemyUpdateService>();
         serviceCollection.AddSingleton<Player>();
         serviceCollection.AddScoped<PlayerInput>();
-        serviceCollection.AddSingleton<GameInputScheme>();
-        serviceCollection.RegisterService<PlayerInputService>();
-        serviceCollection.RegisterService<PlayerUpdateService>();
+        serviceCollection.RegisterSelfAndInterfaces<PlayerInputService>();
+        serviceCollection.RegisterSelfAndInterfaces<PlayerUpdateService>();
         serviceCollection.RegisterSelfAndInterfaces<CharacterDrawService>();
         serviceCollection.RegisterSelfAndInterfaces<EnemyGuiService>();
         
@@ -52,17 +54,25 @@ public class GameScene : Scene
         serviceCollection.AddTransient<EnemyGoalBehavior, FightPlayerEnemyGoalBehavior>();
         serviceCollection.AddTransient<EnemyGoalBehavior, FightGoalEnemyBehavior>();
         serviceCollection.AddTransient<EnemyGoalBehavior, ChaseGoalBehavior>();
+        
+        // Menu
+        serviceCollection.RegisterSelfAndInterfaces<MenuInputService>();
+        serviceCollection.RegisterSelfAndInterfaces<MenuUpdateService>();
+        serviceCollection.RegisterSelfAndInterfaces<MenuGuiService>(ServiceLifetime.Singleton);
+        serviceCollection.AddSingleton<MenuState>();
+        serviceCollection.AddScoped<MenuInput>();
+        serviceCollection.RegisterSelfAndInterfaces<GamePausedInputService>();
 
         // Gui
-        serviceCollection.RegisterInterfaces<GuiInputService>();
+        serviceCollection.RegisterSelfAndInterfaces<GuiInputService>();
         serviceCollection.AddSingleton<GuiState>();
-        serviceCollection.RegisterService<MetricsGuiService>();
+        serviceCollection.RegisterSelfAndInterfaces<MetricsGuiService>();
         
         // Levels
         serviceCollection.AddSingleton<DoorLookup>();
         serviceCollection.AddSingleton<RoomLookup>();
         serviceCollection.AddTransient<DoorService>();
-        serviceCollection.RegisterService<LevelCollisionService>();
+        serviceCollection.RegisterSelfAndInterfaces<LevelCollisionService>();
         serviceCollection.AddTransient<LevelGeometryService>();
         
         var levelDeserializer = new LevelDeserializer();
@@ -78,7 +88,7 @@ public class GameScene : Scene
         
         // Navigation
         serviceCollection.AddSingleton<NavigationState>();
-        serviceCollection.RegisterService<NavigationStartupService>();
+        serviceCollection.RegisterSelfAndInterfaces<NavigationStartupService>();
         serviceCollection.RegisterSelfAndInterfaces<NavigationGuiService>();
         serviceCollection.RegisterSelfAndInterfaces<NavigationService>();
         

@@ -1,12 +1,15 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Entombed.Game.Menu;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Shared.Lifetime;
 using Keyboard = Shared.Input.Keyboard.Keyboard;
 
 namespace Entombed.Game.Characters.Players;
 
-public class PlayerInputService(GameInputScheme inputScheme, PlayerInput input, Keyboard keyboard) : IInputService
+public class PlayerInputService(GamePaused gamePaused, GameInputScheme inputScheme, PlayerInput input, Keyboard keyboard) : IInputService
 {
+    public bool Active => !gamePaused.Paused;
+
     public void Input()
     {
         input.Movement = GetVector2FromInput(
@@ -17,7 +20,6 @@ public class PlayerInputService(GameInputScheme inputScheme, PlayerInput input, 
         
         input.Use = GetPressed(inputScheme.UseKey);
         input.Attack = GetPressed(inputScheme.AttackKey);
-        input.Pause = GetPressed(inputScheme.PauseKey) ? !input.Pause : input.Pause;
         input.Light = GetPressed(inputScheme.LightKey);
     }
     

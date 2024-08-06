@@ -1,13 +1,21 @@
 using System.Collections.Generic;
 using System.Linq;
 using Entombed.Game.Characters.Players;
+using Entombed.Game.Menu;
 using Microsoft.Extensions.Logging;
 using Shared.Lifetime;
 
 namespace Entombed.Game.Characters.Enemies;
 
-public class EnemyUpdateService(PlayerInput playerInput, CharacterLookup characterLookup, ILogger<EnemyUpdateService> logger, IEnumerable<EnemyGoalBehavior> goalBehaviors) : IUpdateService
+public class EnemyUpdateService(
+    GamePaused gamePaused,
+    PlayerInput playerInput,
+    CharacterLookup characterLookup,
+    ILogger<EnemyUpdateService> logger,
+    IEnumerable<EnemyGoalBehavior> goalBehaviors) : IUpdateService
 {
+    public bool Active => !gamePaused.Paused;
+    
     private readonly Dictionary<EnemyGoal, EnemyGoalBehavior> _enemyGoalBehaviorLookup = goalBehaviors.ToDictionary(x => x.Goal);
     
     public void Update()

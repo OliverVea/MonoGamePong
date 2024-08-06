@@ -26,10 +26,9 @@ public static class ServiceExtensions
             .RegisterContentLookup<TextureAtlas>()
             .RegisterContentLookup<Effect>();
 
-        services.RegisterInterfaces<CharacterAtlasLoader>()
-            .RegisterInterfaces<SpriteEffect1Loader>()
-            .RegisterInterfaces<PlayerCharacterSpriteLoader>();
-
-        services.RegisterService<GameDrawerService>();
+        services.RegisterSelfAndInterfaces<CharacterAtlasLoader>()
+            .RegisterSelfAndInterfaces<SpriteEffect1Loader>()
+            .RegisterSelfAndInterfaces<PlayerCharacterSpriteLoader>()
+            .RegisterSelfAndInterfaces<GameDrawerService>();
     }
 }

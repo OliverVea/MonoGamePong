@@ -18,18 +18,18 @@ public static class ServiceExtensions
         services.AddSingleton<GameState>();
         services.AddSingleton<GameProperties>();
 
-        services.RegisterInterfaces<ContentLoader>();
+        services.RegisterSelfAndInterfaces<ContentLoader>();
         
         services.RegisterContentLookup<Texture2D>();
         services.RegisterContentLookup<SoundEffect>();
         services.RegisterContentLookup<SpriteFont>();
         services.RegisterContentLookup<Effect>();
 
-        services.RegisterService<GameDrawerService>();
-        services.RegisterService<GameUpdateService>();
-        services.RegisterService<GameInputService>();
-        services.RegisterService<SoundService>();
-        services.RegisterService<GuiService>();
+        services.RegisterSelfAndInterfaces<GameDrawerService>();
+        services.RegisterSelfAndInterfaces<GameUpdateService>();
+        services.RegisterSelfAndInterfaces<GameInputService>();
+        services.RegisterSelfAndInterfaces<SoundService>();
+        services.RegisterSelfAndInterfaces<GuiService>();
 
         services.AddEvent<BallHitObjectEvent>();
 

@@ -8,6 +8,6 @@ public class MainMenuScene : Scene
 {
     public override void RegisterServices(IServiceCollection serviceCollection)
     {
-        serviceCollection.RegisterService<MainMenuService>();
+        serviceCollection.RegisterSelfAndInterfaces<MainMenuService>();
     }
 }

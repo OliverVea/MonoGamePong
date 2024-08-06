@@ -10,7 +10,13 @@ using Keyboard = Shared.Input.Keyboard.Keyboard;
 
 namespace Entombed.MainMenu;
 
-public class MainMenuService(GraphicsDevice graphicsDevice, ContentLookup<SpriteFont> spriteFontLookup, GameConfiguration gameConfiguration, Keyboard keyboard, SceneManager sceneManager) : IInputService, IDrawService
+public class MainMenuService(
+    GraphicsDevice graphicsDevice,
+    ContentLookup<SpriteFont> spriteFontLookup,
+    GameInputScheme gameInputScheme,
+    GameConfiguration gameConfiguration,
+    Keyboard keyboard,
+    SceneManager sceneManager) : IInputService, IDrawService
 {
     private readonly SpriteBatch _spriteBatch = new(graphicsDevice);
     private readonly State _state = new();
@@ -26,24 +32,15 @@ public class MainMenuService(GraphicsDevice graphicsDevice, ContentLookup<Sprite
 
     public void Input()
     {
-        var up = keyboard.Get(Keys.Up);
-        var down = keyboard.Get(Keys.Down);
-        var enter = keyboard.Get(Keys.Enter);
+        var up = keyboard.Get(gameInputScheme.MenuUp);
+        var down = keyboard.Get(gameInputScheme.MenuDown);
+        var enter = keyboard.Get(gameInputScheme.MenuSelect);
         
-        if (down.Pressed)
-        {
-            _state.SelectedOption = (_state.SelectedOption + 1) % _options.Length;
-        }
+        if (down.Pressed) _state.SelectedOption = (_state.SelectedOption + 1) % (_options.Length + 1);
         
-        if (up.Pressed)
-        {
-            _state.SelectedOption = (_state.SelectedOption + _options.Length - 1) % _options.Length;
-        }
+        if (up.Pressed) _state.SelectedOption = (_state.SelectedOption + _options.Length - 1) % (_options.Length + 1);
         
-        if (enter.Pressed)
-        {
-            _options[_state.SelectedOption].Action();
-        }
+        if (enter.Pressed) _options[_state.SelectedOption].Action();
     }
     
     public void Draw()

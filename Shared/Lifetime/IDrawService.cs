@@ -11,4 +11,5 @@ public interface IDrawService
     void Draw();
 
     public int DrawPriority => 0;
+    bool Active => true;
 }

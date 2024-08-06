@@ -11,4 +11,5 @@ public interface IInputService
     void Input();
 
     public int InputPriority => 0;
+    bool Active => true;
 }

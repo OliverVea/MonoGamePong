@@ -1,10 +1,17 @@
-﻿using Shared.Lifetime;
+﻿using Entombed.Game.Menu;
+using Shared.Lifetime;
 using Keyboard = Shared.Input.Keyboard.Keyboard;
 
 namespace Entombed.Game.Camera;
 
-public class CameraInputService(GameInputScheme gameInputScheme, Keyboard keyboard, CameraInput cameraInput) : IInputService
+public class CameraInputService(
+    GamePaused gamePaused,
+    GameInputScheme gameInputScheme,
+    Keyboard keyboard,
+    CameraInput cameraInput) : IInputService
 {
+    public bool Active => !gamePaused.Paused;
+    
     public void Input()
     {
         cameraInput.CameraZoomAction = CameraZoomAction.None;

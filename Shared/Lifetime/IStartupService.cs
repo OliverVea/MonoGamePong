@@ -14,4 +14,5 @@ public interface IStartupService
     void Startup();
 
     public int StartupPriority => 0;
+    bool Active => true;
 }

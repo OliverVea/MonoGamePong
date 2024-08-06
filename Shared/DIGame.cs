@@ -38,8 +38,8 @@ public class DIGame : Game
         _graphics.Value.GraphicsProfile = GraphicsProfile.HiDef;
         
         // Set 1280x720 resolution
-        _graphics.Value.PreferredBackBufferWidth = 1280;
-        _graphics.Value.PreferredBackBufferHeight = 720;
+        _graphics.Value.PreferredBackBufferWidth = 1920;
+        _graphics.Value.PreferredBackBufferHeight = 1080;
     }
 
     protected override void Initialize()
@@ -88,6 +88,7 @@ public class DIGame : Game
         
         var startups = _serviceProvider.Value
             .GetServices<IStartupService>()
+            .Where(x => x.Active)
             .OrderByDescending(x => x.StartupPriority);
         
         foreach (var startup in startups) startup.Startup();
@@ -102,14 +103,16 @@ public class DIGame : Game
         
         _serviceScope.Value = _serviceProvider.Value.CreateScope();
         
-        if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
-            Keyboard.GetState().IsKeyDown(Keys.Escape))
-            Exit();
+        var inputs = _serviceScope.Value.ServiceProvider.GetServices<IInputService>()
+            .Where(x => x.Active)
+            .OrderByDescending(x => x.InputPriority);
         
-        var inputs = _serviceScope.Value.ServiceProvider.GetServices<IInputService>().OrderByDescending(x => x.InputPriority);
         foreach (var input in inputs) input.Input();
         
-        var gameSystems = _serviceScope.Value.ServiceProvider.GetServices<IUpdateService>().OrderByDescending(x => x.UpdatePriority);
+        var gameSystems = _serviceScope.Value.ServiceProvider.GetServices<IUpdateService>()
+            .Where(x => x.Active)
+            .OrderByDescending(x => x.UpdatePriority);
+        
         foreach (var gameSystem in gameSystems) gameSystem.Update();
 
         base.Update(gameTime);
@@ -130,12 +133,19 @@ public class DIGame : Game
     {
         GraphicsDevice.Clear(Color.Black);
 
-        var drawables = _serviceScope.Value.ServiceProvider.GetServices<IDrawService>().OrderByDescending(x => x.DrawPriority);
+        var drawables = _serviceScope.Value.ServiceProvider.GetServices<IDrawService>()
+            .Where(x => x.Active)
+            .OrderByDescending(x => x.DrawPriority);
+        
         foreach (var drawable in drawables) drawable.Draw();
 
         base.Draw(gameTime);
         
-        var guiServices = _serviceScope.Value.ServiceProvider.GetServices<IGuiService>().OrderByDescending(x => x.GuiPriority);
+        var guiServices = _serviceScope.Value.ServiceProvider
+            .GetServices<IGuiService>()
+            .Where(x => x.Active)
+            .OrderByDescending(x => x.GuiPriority);
+        
         foreach (var guiService in guiServices) guiService.DrawGui();
     }
     

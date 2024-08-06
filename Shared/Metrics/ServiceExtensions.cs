@@ -8,7 +8,7 @@ public static class ServiceExtensions
     public static IServiceCollection AddMetricsHandling(this IServiceCollection services)
     {
         services.AddSingleton<TimeMetrics>();
-        services.RegisterService<TimeMetricInputService>();
+        services.RegisterSelfAndInterfaces<TimeMetricInputService>();
         
         return services;
     }

@@ -13,9 +13,10 @@ public static class ServiceExtensions
         services.AddInputHandling();
         services.AddMetricsHandling();
         
-        services.RegisterInterfaces<ContentLoader>();
+        services.RegisterSelfAndInterfaces<ContentLoader>();
 
         services.RegisterContentLookup<SpriteFont>();
+        services.AddSingleton<GameInputScheme>();
 
         return services;
     }

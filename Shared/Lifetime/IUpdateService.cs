@@ -11,4 +11,5 @@ public interface IUpdateService
     void Update();
 
     public int UpdatePriority => 0;
+    bool Active => true;
 }

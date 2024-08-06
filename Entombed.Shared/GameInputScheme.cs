@@ -1,6 +1,6 @@
 using Microsoft.Xna.Framework.Input;
 
-namespace Entombed.Game;
+namespace Entombed;
 
 public class GameInputScheme
 {
@@ -20,4 +20,10 @@ public class GameInputScheme
     // Camera
     public Keys ZoomInKey { get; set; } = Keys.Z;
     public Keys ZoomOutKey { get; set; } = Keys.X;
+    
+    // Menu
+    public Keys MenuKey { get; set; } = Keys.Escape;
+    public Keys MenuUp { get; set; } = Keys.Up;
+    public Keys MenuDown { get; set; } = Keys.Down;
+    public Keys MenuSelect { get; set; } = Keys.Enter;
 }
