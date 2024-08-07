@@ -2,7 +2,7 @@
 
 namespace Shared.Input.Keyboard;
 
-public class Keyboard : IDisposable
+public class Keyboard
 {
     private readonly Dictionary<Keys, ButtonState> _keyStates = new();
     public IReadOnlyDictionary<Keys, ButtonState> KeyStates => _keyStates;
@@ -18,10 +18,5 @@ public class Keyboard : IDisposable
         _keyStates[key] = value;
 
         return value;
-    }
-
-    void IDisposable.Dispose()
-    {
-        Console.WriteLine("Disposing Keyboard");
     }
 }

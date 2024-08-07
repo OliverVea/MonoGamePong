@@ -1,4 +1,6 @@
-﻿namespace Shared.Navigation;
+﻿using Microsoft.Xna.Framework;
+
+namespace Shared.Navigation;
 
 public class PathfindingService
 {
@@ -6,19 +8,22 @@ public class PathfindingService
     {
         var startIndex = Array.FindIndex(graph.Nodes, node => node.Id == start);
         var endIndex = Array.FindIndex(graph.Nodes, node => node.Id == end);
-
-        var frontier = new PriorityQueue<int[], float>();
-        frontier.Enqueue([startIndex], 0);
+        
+        var frontier = new PriorityQueue<Path, float>();
+        
+        var firstPath = new Path { Nodes = [startIndex], Cost = 0 };
+        
+        frontier.Enqueue(firstPath, Heuristic(startIndex, endIndex));
         
         var visited = new HashSet<int>();
         
-        int[]? path = null;
+        Path? path = null;
         
         while (frontier.TryDequeue(out var current, out var priority))
         {
-            if (visited.Contains(current.Last())) continue;
+            if (visited.Contains(current.Nodes.Last())) continue;
             
-            if (current.Last() == endIndex)
+            if (current.Nodes.Last() == endIndex)
             {
                 path = current;
                 break;
@@ -26,26 +31,36 @@ public class PathfindingService
             
             for (var i = 0; i < graph.Nodes.Length; i++)
             {
-                if (graph.Edges[current.Last(), i])
+                if (graph.Edges[current.Nodes.Last(), i])
                 {
-                    var newCost = graph.Weights[current.Last(), i] + priority;
-                    var newPath = current.Append(i).ToArray();
+                    var newCost = graph.Weights[current.Nodes.Last(), i] + current.Cost;
+                    var newNodes = current.Nodes.Append(i).ToArray();
                     
-                    frontier.Enqueue(newPath, newCost);
+                    var newPath = new Path { Nodes = newNodes, Cost = newCost };
+                    
+                    frontier.Enqueue(newPath, newCost + Heuristic(i, endIndex));
                 }
             }
             
-            visited.Add(current.Last());
+            visited.Add(current.Nodes.Last());
         }
         
-        if (path == null) return new NotFound();
+        if (!path.HasValue) return new NotFound();
 
-        var nodeQueue = path.Select(i => graph.Nodes[i]).ToArray();
+        var nodeQueue = path.Value.Nodes.Select(i => graph.Nodes[i]).ToArray();
         
         return new NavigationPath
         {
             Graph = graph,
             Nodes = nodeQueue
         };
+        
+        float Heuristic(int indexA, int indexB) => Vector2.Distance(graph.Nodes[indexA].Position, graph.Nodes[indexB].Position);
+    }
+
+    private readonly struct Path
+    {
+        public required int[] Nodes { get; init; }
+        public required float Cost { get; init; }
     }
 }

@@ -19,8 +19,8 @@ public class IdleEnemyGoalBehavior(TimeMetrics timeMetrics, ILogger<IdleEnemyGoa
         {
             MoveTowards(enemy, idleTarget, enemy.IdleSpeed);
             
-            var idleDistance = Vector2.Distance(enemy.Position, idleTarget);
-            if (idleDistance < enemy.IdlePrecision)
+            var idleDistance = Vector2.DistanceSquared(enemy.Position, idleTarget);
+            if (idleDistance < enemy.IdlePrecision * enemy.IdlePrecision)
             {
                 enemy.IdleTarget = null;
                 enemy.IdleTime = RandomHelper.RandomFloat(enemy.IdlePatienceFrom, enemy.IdlePatienceTo);

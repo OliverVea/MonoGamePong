@@ -1,8 +1,7 @@
 ﻿using System;
-using Entombed.Game;
+using Entombed.Loading;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using Shared.Content;
 using Shared.Lifetime;
 using Shared.Scenes;
@@ -26,7 +25,7 @@ public class MainMenuService(
 
     private readonly MainMenuOption[] _options =
     [
-        new MainMenuOption { Text = "New Game", Action = sceneManager.Transition<GameScene> },
+        new MainMenuOption { Text = "New Game", Action = sceneManager.Transition<LoadingScene> },
         new MainMenuOption { Text = "Exit", Action = () => { gameConfiguration.Exit = true; } }
     ];
 

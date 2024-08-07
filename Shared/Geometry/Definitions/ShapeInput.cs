@@ -49,4 +49,13 @@ public class ShapeInput : OneOfBase<Circle, Rectangle, Triangle>, IShape
             triangle => triangle.SamplePoint(padding)
         );
     }
+
+    public Vector2 Center()
+    {
+        return Match(
+            circle => circle.Center,
+            rectangle => rectangle.Center,
+            triangle => triangle.Center
+        );
+    }
 }

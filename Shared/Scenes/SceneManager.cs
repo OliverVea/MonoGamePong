@@ -7,8 +7,13 @@ public class SceneManager(Scene initialScene)
     
     internal Scene? Next { get; set; }
 
+    public void Transition<T>(T scene) where T : Scene
+    {
+        Next = scene;
+    }
+    
     public void Transition<T>() where T : Scene, new()
     {
-        Next = new T();
+        Transition(new T());
     }
 }

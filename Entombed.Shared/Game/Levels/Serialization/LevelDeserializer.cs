@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Xml;
 using Microsoft.Xna.Framework;
 using Shared.Geometry.Definitions;
@@ -48,7 +49,8 @@ public class LevelDeserializer
             var room = new Room
             {
                 Walls = walls.ToArray(),
-                Areas = areas.ToArray()
+                Areas = areas.ToArray(),
+                Origin = areas.First().Center()
             };
             
             rooms.Add(room);

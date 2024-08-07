@@ -11,4 +11,5 @@ public readonly partial struct Triangle(Vector2 a, Vector2 b, Vector2 c) : IShap
     public Vector2 A { get; } = a;
     public Vector2 B { get; } = b;
     public Vector2 C { get; } = c;
+    public Vector2 Center => (A + B + C) / 3f;
 }

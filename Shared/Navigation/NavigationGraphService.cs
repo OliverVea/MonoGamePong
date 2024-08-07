@@ -7,7 +7,7 @@ namespace Shared.Navigation;
 
 public class NavigationGraphService
 {
-    private const float EdgeDistanceScale = 1.5f;
+    private const float EdgeDistanceScale = 1.5f * 1.5f;
     
     public NavigationGraph BuildNavigationGraph(IEnumerable<LineSegment> levelGeometry, IReadOnlyCollection<ShapeInput> areas, float cellSize)
     {
@@ -50,7 +50,7 @@ public class NavigationGraphService
                 var intersects = levelGeometryCollection.Any(x => GeometryHelper.Overlaps(x, lineSegment));
                 
                 edges[i, j] = !intersects;
-                weights[i, j] = Vector2.Distance(a, b);
+                weights[i, j] = distance;
             }
         }
         

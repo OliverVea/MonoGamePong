@@ -25,8 +25,10 @@ public static class ServiceExtensions
     
     public static IServiceCollection AddKeyboardHandling(this IServiceCollection serviceCollection)
     {
+        var keyboard = new Keyboard.Keyboard();
+        
         serviceCollection.AddSingleton<IInputService, KeyboardInputService>();
-        serviceCollection.AddSingleton<Keyboard.Keyboard>();
+        serviceCollection.AddSingleton(keyboard);
         
         return serviceCollection;
     }

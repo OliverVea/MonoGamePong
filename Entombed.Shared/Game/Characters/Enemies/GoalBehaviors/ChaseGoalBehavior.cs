@@ -6,7 +6,7 @@ using Shared.Metrics;
 
 namespace Entombed.Game.Characters.Enemies.GoalBehaviors;
 
-public class ChaseGoalBehavior(Level level, TimeMetrics timeMetrics, RoomLookup roomLookup, ILogger<ChaseGoalBehavior> logger, NavigationService navigationGraphService) : EnemyGoalBehavior(timeMetrics, roomLookup)
+public class ChaseGoalBehavior(Level level, TimeMetrics timeMetrics, RoomLookup roomLookup, ILogger<ChaseGoalBehavior> logger, NavigationState navigationState) : EnemyGoalBehavior(timeMetrics, roomLookup)
 {
     public override EnemyGoal Goal => EnemyGoal.ChaseGoal;
     
@@ -49,16 +49,18 @@ public class ChaseGoalBehavior(Level level, TimeMetrics timeMetrics, RoomLookup 
 
     private EnemyNavigationState? GetNewNavigationState(Enemy enemy, Id<Room> goalRoomId)
     {
-        var path = navigationGraphService.FindPath(enemy.Position, level.Goal);
-        if (path.IsT1)
+        var enemyRoomResult = GetCharacterRoom(enemy);
+        if (enemyRoomResult.IsT1)
         {
-            logger.LogWarning("Could not find path to goal");
+            logger.LogWarning("Enemy ({EnemyId}) is not in a room", enemy.Id);
             return null;
         }
+        
+        var path = navigationState.RoomPaths[(enemyRoomResult.AsT0, goalRoomId)];
 
         return new EnemyNavigationState
         {
-            Path = path.AsT0,
+            Path = path,
             GoalRoomId = goalRoomId
         };
     }
@@ -71,8 +73,8 @@ public class ChaseGoalBehavior(Level level, TimeMetrics timeMetrics, RoomLookup 
         
         MoveTowards(enemy, nextPosition, enemy.Speed);
         
-        var distance = Vector2.Distance(enemy.Position, nextPosition);
-        if (distance < enemy.Radius)
+        var distance = Vector2.DistanceSquared(enemy.Position, nextPosition);
+        if (distance < enemy.Radius * enemy.Radius)
         {
             enemy.NavigationState.PathIndex++;
             if (enemy.NavigationState.PathIndex >= enemy.NavigationState.Path.Nodes.Length)

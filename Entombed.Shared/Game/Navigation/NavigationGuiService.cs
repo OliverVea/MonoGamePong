@@ -1,4 +1,5 @@
-﻿using Entombed.Game.Gui;
+﻿using System;
+using Entombed.Game.Gui;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Shared.Camera;
@@ -6,31 +7,63 @@ using Shared.Navigation;
 
 namespace Entombed.Game.Navigation;
 
-public class NavigationGuiService(GuiState guiState, NavigationState navigationState, IsometricCamera isometricCamera)
+public class NavigationGuiService
 {
-    private const float NodeRadius = 0.1f;
+    private const float NodeRadius = 0.025f;
     
+    private readonly Texture2D _nodeTexture;
+    private readonly GuiState _guiState;
+    private readonly NavigationState _navigationState;
+    private readonly IsometricCamera _isometricCamera;
+
+    public NavigationGuiService(GraphicsDevice graphicsDevice, GuiState guiState, NavigationState navigationState, IsometricCamera isometricCamera)
+    {
+        _guiState = guiState;
+        _navigationState = navigationState;
+        _isometricCamera = isometricCamera;
+        
+        
+        var screenSpaceRadius = (int)MathF.Ceiling(isometricCamera.WorldToScreen(NodeRadius));
+        var screenSpaceDiameter = screenSpaceRadius * 2;
+        _nodeTexture = new Texture2D(graphicsDevice, screenSpaceDiameter, screenSpaceDiameter);
+        
+        var data = new Color[screenSpaceDiameter * screenSpaceDiameter];
+        
+        for (var x = 0; x < screenSpaceDiameter; x++)
+        {
+            for (var y = 0; y < screenSpaceDiameter; y++)
+            {
+                var distance = MathF.Sqrt(MathF.Pow(x - screenSpaceRadius, 2) + MathF.Pow(y - screenSpaceRadius, 2));
+                var alpha = distance > screenSpaceRadius ? 0 : 1;
+                
+                data[x + y * screenSpaceDiameter] = new Color(255, 255, 255, alpha);
+            }
+        }
+        
+        _nodeTexture.SetData(data);
+    }
+
     public void DrawGui(SpriteBatch spriteBatch)
     {
-        if (!guiState.ShowNavigationGraph) return;
+        if (!_guiState.ShowNavigationGraph) return;
         
-        var navigationGraph = navigationState.NavigationGraph.Value;
+        var navigationGraph = _navigationState.NavigationGraph;
 
-        for (var i = 0; i < navigationGraph.Nodes.Length; i++)
+        foreach (var node in navigationGraph.Nodes)
         {
-            DrawNode(spriteBatch, navigationGraph.Nodes[i]);
-            DrawEdges(spriteBatch, navigationGraph, i);
+            DrawNode(spriteBatch, node);
+            //DrawEdges(spriteBatch, navigationGraph, i);
         }
     }
 
     private void DrawNode(SpriteBatch spriteBatch, NavigationNode node)
     {
-        var screenSpacePosition = isometricCamera.WorldToScreen(node.Position);
-        var screenSpaceRadius = isometricCamera.WorldToScreen(NodeRadius);
+        var screenSpacePosition = _isometricCamera.WorldToScreen(node.Position) - new Vector2(_nodeTexture.Width / 2f, _nodeTexture.Height / 2f);
         
-        spriteBatch.DrawCircle(screenSpacePosition, screenSpaceRadius, 32, Color.White);
+        spriteBatch.Draw(_nodeTexture, screenSpacePosition, Color.White);
     }
 
+    /*
     private void DrawEdges(SpriteBatch spriteBatch, NavigationGraph navigationGraph, int i)
     {
         for (var j = 0; j < navigationGraph.Nodes.Length; j++)
@@ -40,10 +73,11 @@ public class NavigationGuiService(GuiState guiState, NavigationState navigationS
             var hasEdge = navigationGraph.Edges[i, j];
             if (!hasEdge) continue;
             
-            var start = isometricCamera.WorldToScreen(navigationGraph.Nodes[i].Position);
-            var end = isometricCamera.WorldToScreen(navigationGraph.Nodes[j].Position);
+            var start = _isometricCamera.WorldToScreen(navigationGraph.Nodes[i].Position);
+            var end = _isometricCamera.WorldToScreen(navigationGraph.Nodes[j].Position);
             
             spriteBatch.DrawLine(start, end, Color.White);
         }
     }
+    */
 }

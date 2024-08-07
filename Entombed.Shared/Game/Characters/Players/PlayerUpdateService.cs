@@ -3,14 +3,17 @@ using System.Linq;
 using Entombed.Game.Characters.Enemies;
 using Entombed.Game.Levels;
 using Entombed.Game.Menu;
+using Entombed.Loading;
 using Microsoft.Xna.Framework;
 using Shared.Geometry.Shapes;
 using Shared.Lifetime;
 using Shared.Metrics;
+using Shared.Scenes;
 
 namespace Entombed.Game.Characters.Players;
 
 public class PlayerUpdateService(
+    Level level,
     GamePaused gamePaused,
     Player player,
     PlayerInput playerInput,
@@ -20,6 +23,7 @@ public class PlayerUpdateService(
     LevelCollisionService levelCollisionService,
     DoorService doorService,
     RoomLookup roomLookup,
+    SceneManager sceneManager,
     DoorLookup doorLookup) : IUpdateService
 {
     public bool Active => !gamePaused.Paused;
@@ -36,7 +40,7 @@ public class PlayerUpdateService(
 
     private void UpdatePlayerMovement()
     {
-        var newPosition = player.Position + playerInput.Movement * player.Speed * timeMetrics.DeltaTime;
+        var newPosition = player.Position + playerInput.Movement * player.Speed * timeMetrics.DeltaTime * (player.CarryingGoal ? 0.4f : 1);
         var characterCircle = new Circle(newPosition, player.Radius);
         
         if (playerInput.Movement != Vector2.Zero)  player.Direction = Vector2.Normalize(playerInput.Movement);
@@ -50,14 +54,53 @@ public class PlayerUpdateService(
     private void UpdatePlayerInteraction()
     {
         if (!playerInput.Use) return;
-        
-        var (closestDoor, distance) = doorLookup.Values
+
+        if (TryUseDoor()) return;
+        if (TryUseGoal()) return;
+        if (TryUseStairs()) return;
+    }
+
+    private bool TryUseDoor()
+    {
+        var closestDoor = doorLookup.Values.Where(x => !x.Open)
             .Select(x => (Door: x, Distance: x.Line.Distance(player.Position)))
-            .MinBy(x => x.Distance);
+            .OrderBy(x => x.Distance)
+            .FirstOrDefault();
         
-        if (distance > player.InteractionDistance) return;
+        if (closestDoor == default) return false;
         
-        doorService.OpenDoor(closestDoor.Id);
+        if (closestDoor.Distance > player.InteractionDistance) return false;
+        
+        doorService.OpenDoor(closestDoor.Door.Id);
+        
+        return true;
+    }
+
+    private bool TryUseGoal()
+    {
+        if (player.CarryingGoal) return false;
+        
+        var distanceToGoal = Vector2.Distance(player.Position, level.Goal);
+        
+        if (distanceToGoal > player.InteractionDistance) return false;
+        
+        doorService.OpenAllDoors();
+        player.CarryingGoal = true;
+        
+        return true;
+    }
+
+    private bool TryUseStairs()
+    {
+        if (!player.CarryingGoal) return false;
+        
+        var distanceToStairs = Vector2.Distance(player.Position, level.Stairs);
+        
+        if (distanceToStairs > player.InteractionDistance) return false;
+        
+        sceneManager.Transition<LoadingScene>();
+        
+        return true;
     }
 
     private void UpdatePlayerAttack()

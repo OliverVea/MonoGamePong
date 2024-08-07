@@ -7,14 +7,18 @@ internal static partial class IntersectsHelper
 {
     public static bool Intersects(LineSegment lineSegment, Vector2 point)
     {
-        var distanceStart = Vector2.DistanceSquared(lineSegment.Start, point);
-        var distanceEnd = Vector2.DistanceSquared(lineSegment.End, point);
-        
-        var distance = Vector2.DistanceSquared(lineSegment.Start, lineSegment.End);
+        var v1 = point - lineSegment.Start;
+        var v2 = lineSegment.End - lineSegment.Start;
+        var v3 = point - lineSegment.End;
 
-        var delta = distanceStart + distanceEnd - distance;
+        var dot1 = Vector2.Dot(v1, v2);
+        var dot2 = Vector2.Dot(v3, v2);
+
+        var t = MathHelper.Clamp(dot1 / v2.LengthSquared(), 0, 1);
         
-        return Math.Abs(delta) < 0.0001f;
+        var projection = lineSegment.Start + v2 * t;
+        
+        return Vector2.DistanceSquared(point, projection) < 0.001f;
     }
 
     public static bool Intersects(LineSegment lineSegment, LineSegment otherLineSegment)

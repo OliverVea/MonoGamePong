@@ -21,8 +21,10 @@ public class Enemy : Character
     public float IdleTime { get; set; } = RandomHelper.RandomFloat(5, 10);
     public float IdlePrecision => 0.1f;
     public Vector2? IdleTarget { get; set; }
-    public float IdleSpeed => 1f;
-    public override float Speed => 1.5f;
+    public float IdleSpeed => Speed * 0.66f;
+    private const float EnemySpeedDeviation = 0.1f;
+    private static float SpeedDeviation => RandomHelper.Normal(EnemySpeedDeviation);
+    public override float Speed { get; } = 1.5f + SpeedDeviation;
     public EnemyGoal LastGoal { get; set; } = EnemyGoal.None;
     
     public EnemyNavigationState? NavigationState { get; set; }

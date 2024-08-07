@@ -1,8 +1,8 @@
 ﻿using Entombed;
-using Entombed.Game;
+using Entombed.Loading;
 using Shared;
 
-using var game = new DIGame(s => s.RegisterServices(), new GameScene())
+using var game = new DIGame(s => s.RegisterServices(), new LoadingScene())
 {
     ContentRootDirectory = "Content"
 };

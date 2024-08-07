@@ -17,5 +17,5 @@ public abstract class Character
     public float AttackDamage => 0.1f;
     public DateTime AttackedTime { get; set; }
     public abstract Color Color { get; }
-    public virtual float Speed => 5f;
+    public virtual float Speed => 3.5f;
 }

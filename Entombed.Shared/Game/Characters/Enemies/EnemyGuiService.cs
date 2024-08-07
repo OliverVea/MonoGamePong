@@ -45,8 +45,10 @@ public class EnemyGuiService(Player player, Level level, GuiState guiState, Char
             case EnemyGoal.ChaseGoal:
                 foreach (var enemy in enemies) DrawEnemyNavigationPath(spriteBatch, enemy);
                 break;
-            case EnemyGoal.Skipped:
             case EnemyGoal.Idle:
+                foreach (var enemy in enemies) DrawEnemyIdlePath(spriteBatch, enemy);
+                break;
+            case EnemyGoal.Skipped:
             case EnemyGoal.ChasePlayer:
             default:
                 break;
@@ -70,6 +72,7 @@ public class EnemyGuiService(Player player, Level level, GuiState guiState, Char
         {
             var start = isometricCamera.WorldToScreen(nodes[i]);
             var end = isometricCamera.WorldToScreen(nodes[i + 1]);
+            
             spriteBatch.DrawLine(start, end, Color.Red);
         }
     }
@@ -78,6 +81,7 @@ public class EnemyGuiService(Player player, Level level, GuiState guiState, Char
     {
         var start = isometricCamera.WorldToScreen(enemy.Position);
         var end = isometricCamera.WorldToScreen(player.Position);
+        
         spriteBatch.DrawLine(start, end, Color.Red);
     }
     
@@ -85,6 +89,17 @@ public class EnemyGuiService(Player player, Level level, GuiState guiState, Char
     {
         var start = isometricCamera.WorldToScreen(enemy.Position);
         var end = isometricCamera.WorldToScreen(level.Goal);
+        
+        spriteBatch.DrawLine(start, end, Color.Red);
+    }
+    
+    private void DrawEnemyIdlePath(SpriteBatch spriteBatch, Enemy enemy)
+    {
+        if (enemy.IdleTarget is not {} idleTarget) return;
+        
+        var start = isometricCamera.WorldToScreen(enemy.Position);
+        var end = isometricCamera.WorldToScreen(idleTarget);
+        
         spriteBatch.DrawLine(start, end, Color.Red);
     }
 }
