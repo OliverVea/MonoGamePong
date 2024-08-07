@@ -1,4 +1,5 @@
-﻿using Shared.Geometry.Shapes;
+﻿using Microsoft.Xna.Framework;
+using Shared.Geometry.Shapes;
 
 namespace Entombed.Game.Levels;
 
@@ -8,5 +9,6 @@ public class Door
     public required LineSegment Line { get; init; }
     public required Id<Room> From { get; init; }
     public required Id<Room> To { get; init; }
-    public bool Open { get; set; } = false;
+    public bool Open { get; set; }
+    public Vector2 Center => Line.Center;
 }

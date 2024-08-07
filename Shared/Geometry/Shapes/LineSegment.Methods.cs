@@ -5,7 +5,7 @@ namespace Shared.Geometry.Shapes;
 
 public readonly partial struct LineSegment
 {
-    public bool Intersects(OneOf<Vector2, LineSegment> input)
+    public bool Intersects(in OneOf<Vector2, LineSegment> input)
     {
         var thisLineSegment = this;
         
@@ -15,7 +15,7 @@ public readonly partial struct LineSegment
         );
     }
 
-    public double Distance(Vector2 point)
+    public double Distance(in Vector2 point)
     {
         return DistanceHelper.Distance(this, point);
     }

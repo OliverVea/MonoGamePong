@@ -13,14 +13,21 @@ public class NavigationStateService(
     PathfindingService pathfindingService,
     ILogger<NavigationStateService> logger)
 {
-    private const float NavigationGraphRadius = 0.5f;
+    private const float NavigationGraphRadius = 1f;
 
     public NavigationState GetNavigationState(Level level)
     {
         var walls = level.Rooms.SelectMany(x => x.Walls).ToArray();
-        var areas = level.Rooms.SelectMany(x => x.Areas).ToArray();
+
+        IEnumerable<Vector2>[] nodeContributors =
+        [
+            level.Doors.Select(x => x.Center),
+            level.Rooms.Select(x => x.Origin)
+        ];
         
-        var navigationGraph = navigationGraphService.BuildNavigationGraph(walls, areas, NavigationGraphRadius);
+        var extraVertices = nodeContributors.SelectMany(x => x).Select(x => new NavigationNode(x)).ToArray();
+        
+        var navigationGraph = navigationGraphService.BuildNavigationGraph(extraVertices, walls, NavigationGraphRadius, 100f);
         var roomPaths = BuildRoomPaths(navigationGraph, level);
 
         return new NavigationState
@@ -51,7 +58,7 @@ public class NavigationStateService(
                     continue;
                 }
                 
-                logger.LogError("Navigating from room {From} to room {To} got error {Error}", i, j, pathResult.AsT1.Value);
+                logger.LogError("Navigating from room {From} to room {To} got error: \"{Error}\"", i, j, pathResult.AsT1.Value);
             }
         }
 
@@ -70,12 +77,12 @@ public class NavigationStateService(
         
         var fromNode = navigationGraph.Nodes
             .OrderBy(x => Vector2.DistanceSquared(fromOrigin, x.Position))
-            .FirstOrDefault(x => !levelGeometryService.CollidesWithLevel(fromOrigin, x.Position, level));
+            .FirstOrDefault(x => !levelGeometryService.CollidesWithLevel(fromOrigin, x.Position, level, CollisionType.Wall));
         if (fromNode == null) return new Error<string>("Could not find navigation node for 'from' room origin");
 
         var toNode = navigationGraph.Nodes
             .OrderBy(x => Vector2.DistanceSquared(toOrigin, x.Position))
-            .FirstOrDefault(x => !levelGeometryService.CollidesWithLevel(toOrigin, x.Position, level));
+            .FirstOrDefault(x => !levelGeometryService.CollidesWithLevel(toOrigin, x.Position, level, CollisionType.Wall));
         if (toNode == null) return new Error<string>("Could not find navigation node for 'to' room origin");
         
         var pathFindingResult = pathfindingService.FindPath(navigationGraph, fromNode.Id, toNode.Id);

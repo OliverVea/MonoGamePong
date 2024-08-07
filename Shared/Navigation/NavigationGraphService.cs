@@ -7,23 +7,23 @@ namespace Shared.Navigation;
 
 public class NavigationGraphService
 {
-    private const float EdgeDistanceScale = 1.5f * 1.5f;
-    
-    public NavigationGraph BuildNavigationGraph(IEnumerable<LineSegment> levelGeometry, IReadOnlyCollection<ShapeInput> areas, float cellSize)
+    public NavigationGraph BuildNavigationGraph(
+        IReadOnlyList<NavigationNode> nodes,
+        IEnumerable<LineSegment> levelGeometry,
+        float cellSize,
+        float maxEdgeDistance)
     {
         if (levelGeometry is not ICollection<LineSegment> levelGeometryCollection)
         {
             levelGeometryCollection = levelGeometry.ToArray();
         }
         
-        var nodes = SampleNavigationNode(levelGeometryCollection, areas, cellSize);
+        var edges = new MatrixLookup<bool>(nodes.Count, nodes.Count);
+        var weights = new MatrixLookup<float>(nodes.Count, nodes.Count);
         
-        var edges = new MatrixLookup<bool>(nodes.Length, nodes.Length);
-        var weights = new MatrixLookup<float>(nodes.Length, nodes.Length);
-        
-        for (var i = 0; i < nodes.Length; i++)
+        for (var i = 0; i < nodes.Count; i++)
         {
-            for (var j = 0; j < nodes.Length; j++)
+            for (var j = 0; j < nodes.Count; j++)
             {
                 if (i == j)
                 {
@@ -33,12 +33,12 @@ public class NavigationGraphService
                     continue;
                 }
                 
-                var a = nodes[i].Position;
-                var b = nodes[j].Position;
+                var a = nodes[i];
+                var b = nodes[j];
                 
-                var distance = Vector2.Distance(a, b);
+                var distance = Vector2.Distance(a.Position, b.Position);
                 
-                if (distance >= cellSize * EdgeDistanceScale)
+                if (distance >= cellSize * maxEdgeDistance)
                 {
                     edges[i, j] = false;
                     weights[i, j] = 0;
@@ -46,7 +46,7 @@ public class NavigationGraphService
                     continue;
                 }
                 
-                var lineSegment = new LineSegment(a, b);
+                var lineSegment = new LineSegment(a.Position, b.Position);
                 var intersects = levelGeometryCollection.Any(x => GeometryHelper.Overlaps(x, lineSegment));
                 
                 edges[i, j] = !intersects;
@@ -62,8 +62,11 @@ public class NavigationGraphService
         };
     }
 
-    private NavigationNode[] SampleNavigationNode(ICollection<LineSegment> levelGeometry,
-        IReadOnlyCollection<ShapeInput> areas, float cellSize, int padding = 2)
+    public IEnumerable<NavigationNode> SampleNavigationNodes(
+        ICollection<LineSegment> levelGeometry,
+        IReadOnlyCollection<ShapeInput> areas,
+        float cellSize,
+        int padding = 2)
     {
         var levelGeometryVertices = levelGeometry.SelectMany(x => new[] {x.Start, x.End}).Distinct().ToArray();
         
@@ -82,8 +85,7 @@ public class NavigationGraphService
             var y = bottom + (i + 0.5f) * cellSize;
             for (var j = 0; j < columns + 1; j++)
             {
-                var offset = i % 2 == 0 ? 0.5f : 0;
-                offset = 0;
+                const float offset = 0f;
                 
                 var x = left + (j + offset) * cellSize;
                 
@@ -96,6 +98,6 @@ public class NavigationGraphService
             }
         }
         
-        return positions.Select(x => new NavigationNode {Position = x}).ToArray();
+        return positions.Select(x => new NavigationNode {Position = x});
     }
 }

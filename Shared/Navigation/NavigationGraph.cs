@@ -1,16 +1,27 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.Xna.Framework;
 
 namespace Shared.Navigation;
 
 public class NavigationGraph
 {
-    public required NavigationNode[] Nodes { get; init; }
+    public required IReadOnlyList<NavigationNode> Nodes { get; init; }
     public required MatrixLookup<bool> Edges { get; init; }
     public required MatrixLookup<float> Weights { get; init; }
 }
 
 public class NavigationNode
 {
+    public NavigationNode()
+    {
+    }
+    
+    [SetsRequiredMembers]
+    public NavigationNode(Vector2 position)
+    {
+        Position = position;
+    }
+    
     public Id<NavigationNode> Id { get; } = Id<NavigationNode>.NewId();
     public required Vector2 Position { get; init; }
 }

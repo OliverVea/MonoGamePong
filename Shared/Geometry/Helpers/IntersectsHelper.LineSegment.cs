@@ -5,7 +5,7 @@ namespace Shared.Geometry.Helpers;
 
 internal static partial class IntersectsHelper
 {
-    public static bool Intersects(LineSegment lineSegment, Vector2 point)
+    public static bool Intersects(in LineSegment lineSegment, in Vector2 point)
     {
         var v1 = point - lineSegment.Start;
         var v2 = lineSegment.End - lineSegment.Start;
@@ -21,7 +21,7 @@ internal static partial class IntersectsHelper
         return Vector2.DistanceSquared(point, projection) < 0.001f;
     }
 
-    public static bool Intersects(LineSegment lineSegment, LineSegment otherLineSegment)
+    public static bool Intersects(in LineSegment lineSegment, in LineSegment otherLineSegment)
     {
         var termA = (otherLineSegment.End.Y - otherLineSegment.Start.Y) * (lineSegment.End.X - lineSegment.Start.X);
         var termB = (otherLineSegment.End.X - otherLineSegment.Start.X) * (lineSegment.End.Y - lineSegment.Start.Y);

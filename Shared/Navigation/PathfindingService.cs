@@ -6,8 +6,8 @@ public class PathfindingService
 {
     public OneOf<NavigationPath, NotFound> FindPath(NavigationGraph graph, Id<NavigationNode> start, Id<NavigationNode> end)
     {
-        var startIndex = Array.FindIndex(graph.Nodes, node => node.Id == start);
-        var endIndex = Array.FindIndex(graph.Nodes, node => node.Id == end);
+        var startIndex = FindIndex(graph.Nodes, node => node.Id == start);
+        var endIndex = FindIndex(graph.Nodes, node => node.Id == end);
         
         var frontier = new PriorityQueue<Path, float>();
         
@@ -29,7 +29,7 @@ public class PathfindingService
                 break;
             }
             
-            for (var i = 0; i < graph.Nodes.Length; i++)
+            for (var i = 0; i < graph.Nodes.Count; i++)
             {
                 if (graph.Edges[current.Nodes.Last(), i])
                 {
@@ -62,5 +62,15 @@ public class PathfindingService
     {
         public required int[] Nodes { get; init; }
         public required float Cost { get; init; }
+    }
+
+    private int FindIndex<T>(IReadOnlyList<T> list, Func<T, bool> predicate)
+    {
+        for (var i = 0; i < list.Count; i++)
+        {
+            if (predicate(list[i])) return i;
+        }
+        
+        return -1;
     }
 }

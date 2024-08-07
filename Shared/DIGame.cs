@@ -1,11 +1,13 @@
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using Shared.Extensions;
 using Shared.Lifetime;
+using Shared.Options;
 using Shared.Scenes;
 
 namespace Shared;
@@ -27,6 +29,8 @@ public class DIGame : Game
         get => Content.RootDirectory;
         init => Content.RootDirectory = value;
     }
+    
+    public required string? ConfigurationFilePath { get; init; }
 
     public DIGame(Action<IServiceCollection>? configureGlobalServices, Scene? initialScene = null)
     {
@@ -36,10 +40,6 @@ public class DIGame : Game
         _sceneManager = new SceneManager(initialScene ?? Scene.Empty);
 
         _graphics.Value.GraphicsProfile = GraphicsProfile.HiDef;
-        
-        // Set 1280x720 resolution
-        _graphics.Value.PreferredBackBufferWidth = 1920;
-        _graphics.Value.PreferredBackBufferHeight = 1080;
     }
 
     protected override void Initialize()
@@ -50,16 +50,34 @@ public class DIGame : Game
         _globalServiceCollection.AddSingleton(_ => new GameTime());
         _globalServiceCollection.AddSingleton(_ => _sceneManager);
 
-        _globalServiceCollection.AddLogging(c => c.AddSimpleConsole(o =>
+        var configurationBuilder = new ConfigurationBuilder();
+        
+        if (ConfigurationFilePath is not null) configurationBuilder.AddIniFile(ConfigurationFilePath);
+        
+        var configuration = configurationBuilder.Build();
+        _globalServiceCollection.AddSingleton<IConfiguration>(_ => configuration);
+        
+        _globalServiceCollection.AddLogging(c =>
         {
-            o.SingleLine = true;
-        }));
+            c.AddConfiguration(configuration.GetSection("Logging"));
+            c.AddSimpleConsole(o => { o.SingleLine = true; });
+        });
+        
+        _globalServiceCollection.AddOptions();
+        _globalServiceCollection.AddOptions<DisplayOptions>().BindConfiguration(DisplayOptions.SectionName);
         
         _configureGlobalServices?.Invoke(_globalServiceCollection);
 
         _serviceProvider.Value = BuildServiceProvider();
         
         _logger.Value = _serviceProvider.Value.GetRequiredService<ILogger<DIGame>>();
+        
+        var displayOptions = _serviceProvider.Value.GetRequiredService<IOptions<DisplayOptions>>().Value;
+        
+        _graphics.Value.IsFullScreen = displayOptions.Fullscreen;
+        _graphics.Value.PreferredBackBufferWidth = displayOptions.Width;
+        _graphics.Value.PreferredBackBufferHeight = displayOptions.Height;
+        _graphics.Value.ApplyChanges();
         
         base.Initialize();
     }
@@ -84,7 +102,7 @@ public class DIGame : Game
 
     private void SceneStartup()
     {
-        _logger.Value.LogInformation("Scene startup");
+        _logger.Value.LogInformation("{SceneType} startup", _sceneManager.Current.GetType().Name);
         
         var startups = _serviceProvider.Value
             .GetServices<IStartupService>()

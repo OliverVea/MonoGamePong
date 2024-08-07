@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Security;
 using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -8,13 +9,20 @@ namespace Entombed.Game.Levels;
 
 public class LevelDrawService(Level level, RoomLookup roomLookup, DoorLookup doorLookup, IsometricCamera isometricCamera, ILogger<LevelDrawService> logger)
 {
+    private const float StairsRadius = 0.05f;
+    private const float GoalRadius = 0.05f;
+    private const float WallWidth = 0.05f;
+    private const float LitWallScale = 2f;
+    
     public void Draw(SpriteBatch spriteBatch)
     {
         var revealedRooms = roomLookup.Values.Where(room => room.Revealed).ToArray();
+        
+        var screenSpaceWallWidth = isometricCamera.WorldToScreen(WallWidth);
 
         foreach (var room in revealedRooms)
         {
-            DrawRoom(room, spriteBatch);
+            DrawRoom(room, spriteBatch, screenSpaceWallWidth);
         }
 
         foreach (var door in doorLookup.Values)
@@ -26,15 +34,17 @@ public class LevelDrawService(Level level, RoomLookup roomLookup, DoorLookup doo
         DrawStairs(spriteBatch);
     }
 
-    private void DrawRoom(Room room, SpriteBatch spriteBatch)
+    private void DrawRoom(Room room, SpriteBatch spriteBatch, float screenSpaceWallWidth)
     {
         var walls = room.Walls;
+        
+        if (room.Lit) screenSpaceWallWidth *= LitWallScale;
             
         foreach (var wall in walls)
         {
             var wallScreenSpace = isometricCamera.WorldToScreen(wall);
-                
-            spriteBatch.DrawLineSegment(wallScreenSpace, Color.White, room.Lit ? 3 : 1);
+            var direction = Vector2.Normalize(wall.End - wall.Start);
+            spriteBatch.DrawLineSegment(wallScreenSpace, Color.White, screenSpaceWallWidth);
         }
     }
 
@@ -54,7 +64,9 @@ public class LevelDrawService(Level level, RoomLookup roomLookup, DoorLookup doo
     {
         var goalScreenSpace = isometricCamera.WorldToScreen(level.Goal);
         
-        spriteBatch.DrawCircle(goalScreenSpace, 5, 16, Color.Yellow);
+        var screenSpaceGoalRadius = isometricCamera.WorldToScreen(GoalRadius);
+        
+        spriteBatch.DrawCircle(goalScreenSpace, screenSpaceGoalRadius, 16, Color.Yellow);
     }
     
     private void DrawStairs(SpriteBatch spriteBatch)
@@ -70,8 +82,9 @@ public class LevelDrawService(Level level, RoomLookup roomLookup, DoorLookup doo
         var stairsRoom = roomLookup.Get(stairsRoomResult.AsT0);
         if (!stairsRoom.Revealed) return;
         
-        var stairsScreenSpace = isometricCamera.WorldToScreen(level.Stairs);
+        var screenSpaceStairsPosition = isometricCamera.WorldToScreen(level.Stairs);
+        var screenSpaceStairsRadius = isometricCamera.WorldToScreen(StairsRadius);
         
-        spriteBatch.DrawCircle(stairsScreenSpace, 5, 16, Color.Green);
+        spriteBatch.DrawCircle(screenSpaceStairsPosition, screenSpaceStairsRadius, 16, Color.Green);
     }
 }

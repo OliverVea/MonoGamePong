@@ -9,4 +9,5 @@ public readonly partial struct LineSegment(Vector2 start, Vector2 end)
     
     public Vector2 Start { get; } = start;
     public Vector2 End { get; } = end;
+    public Vector2 Center => (Start + End) / 2f;
 }
