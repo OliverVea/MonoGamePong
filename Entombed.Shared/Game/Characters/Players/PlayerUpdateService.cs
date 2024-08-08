@@ -24,6 +24,7 @@ public class PlayerUpdateService(
     DoorService doorService,
     RoomLookup roomLookup,
     SceneManager sceneManager,
+    RoomLightService roomLightService,
     DoorLookup doorLookup) : IUpdateService
 {
     public bool Active => !gamePaused.Paused;
@@ -35,7 +36,6 @@ public class PlayerUpdateService(
         UpdatePlayerMovement();
         UpdatePlayerInteraction();
         UpdatePlayerAttack();
-        UpdatePlayerLight();
     }
 
     private void UpdatePlayerMovement()
@@ -58,6 +58,8 @@ public class PlayerUpdateService(
         if (TryUseDoor()) return;
         if (TryUseGoal()) return;
         if (TryUseStairs()) return;
+
+        ToggleRoomLight();
     }
 
     private bool TryUseDoor()
@@ -103,6 +105,14 @@ public class PlayerUpdateService(
         return true;
     }
 
+    private void ToggleRoomLight()
+    {
+        var roomResult = roomLookup.GetRoomWithPosition(player.Position);
+        if (roomResult.IsT1) return;
+        
+        roomLightService.ToggleRoomLight(roomResult.AsT0);
+    }
+
     private void UpdatePlayerAttack()
     {
         if (!playerInput.Attack) return;
@@ -112,19 +122,6 @@ public class PlayerUpdateService(
         var hitEnemies = enemiesInRange.Where(x => AngleToPlayer(x) < player.AttackAngle).ToArray();
         
         foreach (var enemy in hitEnemies) characterDamageService.Damage(player.Id, enemy.Id, player.AttackDamage);
-    }
-
-    private void UpdatePlayerLight()
-    {
-        if (!playerInput.Light) return;
-        
-        var roomResult = roomLookup.GetRoomWithPosition(player.Position);
-        if (roomResult.IsT1) return;
-        
-        var roomId = roomResult.AsT0;
-        var room = roomLookup.Get(roomId);
-        
-        room.Lit = !room.Lit;
     }
     
     private float DistanceToPlayer(Enemy enemy) => Vector2.Distance(player.Position, enemy.Position);

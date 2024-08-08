@@ -1,9 +1,10 @@
-﻿using System.Linq;
-using System.Security;
+﻿using System;
+using System.Linq;
 using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Shared.Camera;
+using Shared.Geometry.Shapes;
 
 namespace Entombed.Game.Levels;
 
@@ -13,21 +14,20 @@ public class LevelDrawService(Level level, RoomLookup roomLookup, DoorLookup doo
     private const float GoalRadius = 0.05f;
     private const float WallWidth = 0.05f;
     private const float LitWallScale = 2f;
+    private static readonly Color LitRoomColor = new(0.1f, 0.1f, 0f, 0.15f);
     
     public void Draw(SpriteBatch spriteBatch)
     {
-        var revealedRooms = roomLookup.Values.Where(room => room.Revealed).ToArray();
-        
         var screenSpaceWallWidth = isometricCamera.WorldToScreen(WallWidth);
-
-        foreach (var room in revealedRooms)
-        {
-            DrawRoom(room, spriteBatch, screenSpaceWallWidth);
-        }
 
         foreach (var door in doorLookup.Values)
         {
             DrawDoor(door, spriteBatch);
+        }
+
+        foreach (var room in roomLookup.Values)
+        {
+            DrawRoom(room, spriteBatch, screenSpaceWallWidth);
         }
 
         DrawGoal(spriteBatch);
@@ -36,14 +36,42 @@ public class LevelDrawService(Level level, RoomLookup roomLookup, DoorLookup doo
 
     private void DrawRoom(Room room, SpriteBatch spriteBatch, float screenSpaceWallWidth)
     {
-        var walls = room.Walls;
+        if (!room.Revealed) return;
+
+        if (room.Lit)
+        {
+            var screenSpaceAreas = room.Areas.Select(isometricCamera.WorldToScreen).ToArray();
+            foreach (var screenSpaceArea in screenSpaceAreas)
+            {
+                screenSpaceArea.Switch(
+                    circle => { },
+                    rectangle => spriteBatch.FillRectangle(rectangle.ToXnaRectangle(), LitRoomColor),
+                    triangle => { });
+            }
+        }
         
-        if (room.Lit) screenSpaceWallWidth *= LitWallScale;
+        var walls = room.Walls;
             
         foreach (var wall in walls)
         {
             var wallScreenSpace = isometricCamera.WorldToScreen(wall);
-            var direction = Vector2.Normalize(wall.End - wall.Start);
+            var direction = wall.Center - room.Origin;
+            if (MathF.Abs(direction.X) > MathF.Abs(direction.Y)) direction.Y = 0;
+            else direction.X = 0;
+            direction = Vector2.Normalize(direction);
+            
+            direction = new Vector2(direction.X, -direction.Y);
+            
+            var wallOutwardOffset = -direction * screenSpaceWallWidth / 2f;
+            
+            var wallDirection = Vector2.Normalize(wall.End - wall.Start);
+            wallDirection = new Vector2(wallDirection.X, -wallDirection.Y);
+            var wallExtensionOffset = wallDirection * screenSpaceWallWidth / 2f;
+
+            wallScreenSpace = new LineSegment(
+                wallScreenSpace.Start + wallOutwardOffset - wallExtensionOffset,
+                wallScreenSpace.End + wallOutwardOffset + wallExtensionOffset);
+            
             spriteBatch.DrawLineSegment(wallScreenSpace, Color.White, screenSpaceWallWidth);
         }
     }

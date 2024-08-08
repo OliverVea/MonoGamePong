@@ -72,11 +72,14 @@ public class GameScene(Level level, Player player, NavigationState navigationSta
         // Levels
         serviceCollection.AddSingleton<DoorLookup>();
         serviceCollection.AddSingleton<RoomLookup>();
+        serviceCollection.AddSingleton<RoomGraph>();
+        serviceCollection.RegisterSelfAndInterfaces<RoomLightService>();
         serviceCollection.RegisterSelfAndInterfaces<DoorService>();
         serviceCollection.RegisterSelfAndInterfaces<LevelGeometryService>();
         serviceCollection.RegisterSelfAndInterfaces<LevelCollisionService>();
         serviceCollection.RegisterSelfAndInterfaces<LevelDrawService>();
         serviceCollection.RegisterSelfAndInterfaces<GoalUpdateService>();
+        serviceCollection.RegisterSelfAndInterfaces<LevelGuiService>();
         
         // Navigation
         serviceCollection.RegisterSelfAndInterfaces<NavigationGuiService>();

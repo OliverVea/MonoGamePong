@@ -1,5 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
+using Shared.Geometry.Definitions;
 using Shared.Geometry.Shapes;
+using Rectangle = Shared.Geometry.Shapes.Rectangle;
 
 namespace Shared.Camera;
 
@@ -46,6 +48,26 @@ public class IsometricCamera(IsometricCameraConfiguration isometricCameraConfigu
         return new Circle(center, radius);
     }
     
+    public Rectangle WorldToScreen(Rectangle rectangle)
+    {
+        var location = WorldToScreen(rectangle.Center);
+        var width = WorldToScreen(rectangle.Width);
+        var height = WorldToScreen(rectangle.Height);
+        
+        var size = new Vector2(width, height);
+        
+        return new Rectangle(location, size);
+    }
+    
+    public Triangle WorldToScreen(Triangle triangle)
+    {
+        var a = WorldToScreen(triangle.A);
+        var b = WorldToScreen(triangle.B);
+        var c = WorldToScreen(triangle.C);
+        
+        return new Triangle(a, b, c);
+    }
+    
     public Vector2 ScreenToWorld(Vector2 cameraPosition)
     {
         var worldPosition = new Vector2
@@ -60,5 +82,14 @@ public class IsometricCamera(IsometricCameraConfiguration isometricCameraConfigu
     public float ScreenToWorld(float cameraDistance)
     {
         return cameraDistance / Zoom;
+    }
+
+    public ShapeInput WorldToScreen(ShapeInput shapeInput)
+    {
+        return shapeInput.Match<ShapeInput>(
+            circle => WorldToScreen(circle),
+            rectangle => WorldToScreen(rectangle),
+            triangle => WorldToScreen(triangle)
+        );
     }
 }

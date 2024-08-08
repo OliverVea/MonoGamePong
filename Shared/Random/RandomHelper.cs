@@ -10,13 +10,6 @@ public static class RandomHelper
     {
         return (float) Random.NextDouble() * (to - from) + from;
     }
-    
-    public static T PickOne<T>(this IReadOnlyList<T> list)
-    {
-        var index = Random.Next(list.Count);
-        
-        return list[index];
-    }
 
     public static Vector2 RandomDirection()
     {
@@ -24,24 +17,52 @@ public static class RandomHelper
         
         return new Vector2(MathF.Cos(angle), MathF.Sin(angle));
     }
+    
+    private static readonly Vector2[] CardinalDirections =
+    {
+        Vector2.UnitX,
+        -Vector2.UnitX,
+        Vector2.UnitY,
+        -Vector2.UnitY
+    };
+    public static Vector2 RandomCardinalDirection()
+    {
+        return PickOne(CardinalDirections);
+    }
 
     public static int RandomInt(int from, int to)
     {
         return Random.Next(from, to + 1);
     }
 
-    public static T RandomElement<T>(ICollection<T> collection)
+    public static T PickOne<T>(IReadOnlyCollection<T> collection)
     {
-        var index = Random.Next(collection.Count());
+        var index = Random.Next(collection.Count);
         
         return collection.ElementAt(index);
     }
 
-    public static T RandomElement<T>(Span<T> span)
+    public static T PickOne<T>(Span<T> span)
     {
         var index = Random.Next(span.Length);
         
         return span[index];
+    }
+
+    public static T PickOne<T>(IReadOnlyCollection<T> collection, Func<T, float> weightPredicate)
+    {
+        var totalWeight = collection.Sum(weightPredicate);
+        var randomValue = RandomFloat(0, totalWeight);
+        
+        foreach (var item in collection)
+        {
+            var weight = weightPredicate(item);
+            if (randomValue < weight) return item;
+            
+            randomValue -= weight;
+        }
+        
+        return collection.Last();
     }
 
     public static float Normal(float dev) => Normal(0, dev);

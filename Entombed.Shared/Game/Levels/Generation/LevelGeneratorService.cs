@@ -21,14 +21,6 @@ public class LevelGeneratorService(ILogger<LevelGeneratorService> logger)
     
     private const float DoorWidth = 1;
     
-    private static readonly Vector2[] Directions =
-    [
-        new Vector2(1, 0),
-        new Vector2(-1, 0),
-        new Vector2(0, 1),
-        new Vector2(0, -1)
-    ];
-    
     public Level GenerateLevel()
     {
         var roomCount = RandomHelper.RandomInt(RoomCountMin, RoomCountMax);
@@ -48,7 +40,7 @@ public class LevelGeneratorService(ILogger<LevelGeneratorService> logger)
                 var originRoom = roomRectangles[originRoomIndex];
                 var newRoom = GenerateRoom();
                 
-                var direction = RandomHelper.RandomElement(Directions);
+                var direction = RandomHelper.RandomCardinalDirection();
                 var newRoomPosition = originRoom.Center + direction * (originRoom.Size + newRoom.Size) / 2;
                 
                 newRoom = new Rectangle(newRoomPosition, newRoom.Size);
@@ -87,7 +79,9 @@ public class LevelGeneratorService(ILogger<LevelGeneratorService> logger)
         var rooms = GetRooms(roomRectangles, doorDatas);
         var doors = GetDoors(rooms, doorDatas);
 
-        var stairsRoom = RandomHelper.RandomElement(rooms[1..]);
+        var roomGraph = new RoomGraph(rooms, doors);
+
+        var stairsRoom = RandomHelper.PickOne(rooms[1..], room => roomGraph.GetStepsFromStart(room.Id));
         
         return new Level
         {

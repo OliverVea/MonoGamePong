@@ -26,6 +26,8 @@ public readonly partial struct Rectangle(Vector2 center, Vector2 size) : IShape
         new LineSegment(BottomLeft, TopLeft)
     ];
 
-    public double Width => Size.X;
-    public double Height => Size.Y;
+    public float Width => Size.X;
+    public float Height => Size.Y;
+    
+    public Microsoft.Xna.Framework.Rectangle ToXnaRectangle() => new((int)Left, (int)Top, (int)Width, (int)Height);
 }

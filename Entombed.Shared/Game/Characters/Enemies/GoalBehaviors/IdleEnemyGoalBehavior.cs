@@ -43,7 +43,7 @@ public class IdleEnemyGoalBehavior(TimeMetrics timeMetrics, ILogger<IdleEnemyGoa
             var roomId = roomResult.AsT0;
             var room = RoomLookup.Get(roomId);
 
-            var area = room.Areas.PickOne();
+            var area = RandomHelper.PickOne(room.Areas);
             enemy.IdleTarget = area.SamplePoint(padding: enemy.Radius * PaddingScale);
             
             return new Success();
